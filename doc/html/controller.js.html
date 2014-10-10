@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: controller.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: controller.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*
+ * periodic
+ * http://github.com/typesettin/periodic
+ *
+ * Copyright (c) 2014 Yaw Joseph Etse. All rights reserved.
+ */
+
+'use strict';
+
+var fs = require('fs-extra'),
+	path = require('path'),
+	Utilities = require('periodicjs.core.utilities'),
+	CoreUtilities;
+
+var logger,appSettings,theme;
+
+/**
+ * A core constructor that provides numerous controller helper functions.
+ * @{@link https://github.com/typesettin/periodicjs.core.controller}
+ * @author Yaw Joseph Etse
+ * @constructor
+ * @copyright Copyright (c) 2014 Typesettin. All rights reserved.
+ * @license MIT
+ * @requires module:fs-extra
+ * @requires module:path
+ * @requires module:periodicjs.core.utilities
+ * @param {object} resources variable injection from resources from instantiated periodic express app
+ */
+var Controller = function (resources) {
+	logger = resources.logger;
+	appSettings = resources.settings;
+	theme = resources.settings.theme;
+	CoreUtilities = new Utilities(resources);
+};
+
+/**
+ * Gets the path to the view file specified, first look at custom theme views, then extension views, then default views
+ * @param  {object}   options  extname, themename, themefileext - support custom theme files
+ * @param  {Function} callback async callback
+ * @return {Function}            async callback(err,viewname)
+ */
+Controller.prototype.getPluginViewDefaultTemplate = function (options, callback) {
+	var extname = options.extname || '',
+		themename = theme,
+		viewname = options.viewname,
+		themefileext = options.themefileext,
+		themetemplatefile,
+		exttemplatefile;
+		themetemplatefile = (themename && themefileext) ? path.join(path.resolve(process.cwd(), './content/themes'), themename, 'views', viewname + '.' + themefileext) : false;
+		exttemplatefile =  (extname && themefileext) ? path.join(path.resolve(process.cwd(), './node_modules', extname), 'views', viewname + '.' + themefileext) : false;
+
+	var getExtensionView = function (viewname, callback) {
+		if (extname) {
+			fs.open(exttemplatefile, 'r', function (err) {
+				if (err) {
+					callback(err, viewname, null);
+				}
+				else {
+					callback(null, viewname, exttemplatefile);
+				}
+			});
+		}
+		else {
+			callback('no extname', viewname, viewname);
+		}
+	};
+
+	var getThemeView = function (viewname, callback) {
+		if (theme) {
+			fs.open(themetemplatefile, 'r', function (err) {
+				if (err) {
+					callback(err, viewname, null);
+				}
+				else {
+					callback(null, viewname, themetemplatefile);
+				}
+			});
+		}
+		else {
+			callback('no theme', viewname, viewname);
+		}
+	};
+
+	getThemeView(viewname, function (err, defaultview, themeview) {
+		if (err) {
+			getExtensionView(defaultview, function (err, defaultview, extname) {
+				if (err) {
+					callback(null, defaultview);
+				}
+				else {
+					callback(null, extname);
+				}
+			});
+		}
+		else {
+			callback(null, themeview);
+		}
+	});
+};
+
+/**
+ * default response handler for express views, or will redirect to another request
+ * @param  {object} options res,req,redirecturl,err,callback,responseData - this is what's sent to the rendered template view, also appends http request information like base url, query string parameters, etc
+ * @return {object} response object render or callback
+ */
+Controller.prototype.handleDocumentQueryRender = function (options) {
+	var res = options.res,
+		req = options.req,
+		redirecturl = options.redirecturl,
+		err = options.err,
+		callback = options.callback,
+		responseData = options.responseData;
+
+	if (err) {
+		this.handleDocumentQueryErrorResponse({
+			res: res,
+			req: req,
+			err: err,
+			callback: callback,
+			redirecturl: redirecturl
+		});
+	}
+	else {
+		responseData.periodic = responseData.periodic || {};
+		responseData.periodic.version = appSettings.version;
+		responseData.periodic.name = appSettings.name;
+		responseData.request = {
+			query: req.query,
+			params: req.params,
+			baseurl: req.baseUrl,
+			originalurl: req.originalUrl,
+			parsed: req._parsedUrl
+		};
+
+		responseData.flash_messages = req.flash();
+		if (req.query.format === 'json' || req.params.ext === 'json') {
+			res.send(responseData);
+		}
+		else if (req.query.callback) {
+			res.jsonp(responseData);
+		}
+		else if (options.redirecturl) {
+			res.redirect(options.redirecturl);
+		}
+		else {
+			res.render(options.renderView, responseData);
+		}
+	}
+	if (callback) {
+		callback();
+	}
+};
+
+/**
+ * default response handler for error, or will redirect with flash error set
+ * @param  {object} options err,req,res,callback
+ * @return {object} response object render or callback
+ */
+Controller.prototype.handleDocumentQueryErrorResponse = function (options) {
+	var err = options.err,
+		errormessage = (typeof options.err === 'string') ? options.err : options.err.message,
+		redirecturl = options.redirecturl,
+		req = options.req,
+		res = options.res,
+		callback = options.callback; //,
+	// errorFlashMessage = (options.errorflash) ? options.errorflash : errormessage;
+
+	res.status(400);
+
+	logger.error(err.stack);
+	logger.error(errormessage, req.url);
+	if (req.query.format === 'json') {
+		res.send({
+			'result': 'error',
+			'data': {
+				error: errormessage
+			}
+		});
+	}
+	else {
+		if (options.errorflash !== false) {
+			req.flash('error', errormessage);
+		}
+		if (callback) {
+			callback();
+		}
+		else if (redirecturl) {
+			res.redirect(redirecturl);
+		}
+		else {
+			var self = this;
+			self.getPluginViewDefaultTemplate({
+					viewname: 'home/error404',
+					themefileext: appSettings.templatefileextension
+				},
+				function (err, templatepath) {
+					self.handleDocumentQueryRender({
+						res: res,
+						req: req,
+						renderView: templatepath,
+						responseData: {
+							pagedata: {
+								title: 'Not Found'
+							},
+							user: req.user,
+							url: req.url
+						}
+					});
+				}
+			);
+		}
+	}
+};
+
+/**
+ * short hand mongoose load document query
+ * @param  {object} options model,docid - id or name,callback,population -mongoose population, selection - mongoose selection 
+ * @return {Function} callback(err,document)
+ */
+Controller.prototype.loadModel = function (options) {
+	var model = options.model,
+		docid = options.docid,
+		sort = options.sort,
+		callback = options.callback,
+		population = options.population,
+		selection = options.selection,
+		query;
+
+	if (CoreUtilities.isValidObjectID(docid)) {
+		query = {
+			$or: [{
+				name: docid
+			}, {
+				_id: docid
+			}]
+		};
+	}
+	else if (options.searchusername) {
+		query = {
+			$or: [{
+				name: docid
+			}, {
+				username: docid
+			}]
+		};
+	}
+	else {
+		query = {
+			name: docid
+		};
+	}
+
+	if (population) {
+		model.findOne(query).sort(sort).select(selection).populate(population).exec(callback);
+	}
+	else {
+		model.findOne(query).sort(sort).select(selection).exec(callback);
+	}
+};
+
+/**
+ * short hand mongoose search documents query
+ * @param  {object} options model,query - mongoose query,callback,population -mongoose population, selection - mongoose selection , limit, offset
+ * @return {Function} callback(err,documents)
+ */
+Controller.prototype.searchModel = function (options) {
+	var model = options.model,
+		query = options.query,
+		sort = options.sort,
+		offset = options.offset,
+		selection = options.selection,
+		limit = options.limit,
+		callback = options.callback,
+		population = options.population;
+
+	sort = (sort) ? sort : '-createdat';
+	offset = (offset) ? offset : 0;
+	limit = (limit || limit > 200) ? limit : 30;
+
+	if (population) {
+		model.find(query).sort(sort).select(selection).limit(limit).skip(offset).populate(population).exec(callback);
+	}
+	else {
+		model.find(query).sort(sort).select(selection).limit(limit).skip(offset).exec(callback);
+	}
+};
+
+/**
+ * short hand mongoose create document query
+ * @param  {object} options model,newdoc - document to insert, req, res,callback, successredirect, appendid - append the id of newly created document on redirect 
+ * @return {object} responseData or redirected page
+ */
+Controller.prototype.createModel = function (options) {
+	var model = options.model,
+		newdoc = options.newdoc,
+		req = options.req,
+		res = options.res,
+		callback = options.callback,
+		successredirect = options.successredirect,
+		appendid = options.appendid,
+		responseData = {};
+
+	model.create(newdoc, function (err, saveddoc) {
+		if (err) {
+
+			if(callback){
+				callback(null,saveddoc);
+			}
+			else{
+				
+				this.handleDocumentQueryErrorResponse({
+					err: err,
+					errorflash: err.message,
+					res: res,
+					req: req
+				});	
+			}
+		}
+		else {
+			if(callback){
+				callback(null,saveddoc);
+			}
+			else if (req.query.format === 'json' || req.params.ext === 'json') {
+				req.flash('success', 'Saved');
+				responseData.result = 'success';
+				responseData.data = {};
+				responseData.data.flash_messages = req.flash();
+				responseData.data.doc = saveddoc;
+				res.send(responseData);
+			}
+			else if (appendid) {
+				req.flash('success', 'Saved');
+				res.redirect(successredirect + saveddoc._id);
+			}
+			else {
+				req.flash('success', 'Saved');
+				res.redirect(successredirect);
+			}
+		}
+	}.bind(this));
+};
+
+/**
+ * short hand mongoose update document query
+ * @param  {object} options model, id - objectid of mongoose document,updatedoc - document to update, req, res,callback, successredirect, appendid - append the id of newly created document on redirect, removefromarray - sets the update operation to manipulate an array of documents with mongo $pull, appendArray - sets the update operation to manipulate an array of documents with mongo $push, saverevision - save revisions 
+ * @return {object} responseData or redirected page
+ */
+Controller.prototype.updateModel = function (options) {
+	var model = options.model,
+		id = options.id,
+		updatedoc = options.updatedoc,
+		req = options.req,
+		res = options.res,
+		callback = options.callback,
+		successredirect = options.successredirect,
+		// failredirect = options.failredirect,
+		appendid = options.appendid,
+		responseData = {},
+		updateOperation;
+
+	if (options.removeFromArray) {
+		logger.silly('removing array in doc');
+		updateOperation = {
+			$pull: updatedoc
+		};
+	}
+	else if (options.appendArray) {
+		logger.silly('appending array in doc');
+		updateOperation = {
+			$push: updatedoc
+		};
+	}
+	else {
+		logger.silly('updating entire doc');
+		updateOperation = {
+			$set: updatedoc
+		};
+	}
+
+	model.findByIdAndUpdate(id, updateOperation, function (err, saveddoc) {
+		if (err) {
+			if(callback){
+				callback(err,null);
+			}
+			else{
+				this.handleDocumentQueryErrorResponse({
+					err: err,
+					errorflash: err.message,
+					res: res,
+					req: req
+				});				
+			}
+		}
+		else {
+			if(callback){
+				callback(null,saveddoc);
+			}
+			else if (req.query.format === 'json' || req.params.ext === 'json') {
+				req.flash('success', 'Saved');
+				responseData.result = 'success';
+				responseData.data = {};
+				responseData.data.flash_messages = req.flash();
+				if (options.population) {
+					model.findOne({
+						_id: saveddoc._id
+					}).populate(options.population).exec(function (err, popdoc) {
+						if (err) {
+							responseData.data.docpopulationerror = err;
+							responseData.data.status = 'couldnt populate';
+							responseData.data.doc = saveddoc;
+							res.send(responseData);
+						}
+						else {
+							responseData.data.doc = popdoc;
+							res.send(responseData);
+						}
+					});
+				}
+				else {
+					responseData.data.doc = saveddoc;
+					res.send(responseData);
+				}
+			}
+			else if (appendid) {
+				req.flash('success', 'Saved');
+				res.redirect(successredirect + saveddoc._id);
+			}
+			else {
+				req.flash('success', 'Saved');
+				res.redirect(successredirect);
+			}
+			//save revision
+			var changesetdata = updatedoc;
+			if (changesetdata.docid) {
+				delete changesetdata.docid;
+			}
+			if (changesetdata._csrf) {
+				delete changesetdata._csrf;
+			}
+			if (changesetdata.save_button) {
+				delete changesetdata.save_button;
+			}
+			if (options.saverevision) {
+				model.findByIdAndUpdate(
+					id, {
+						$push: {
+							'changes': {
+								changeset: updatedoc
+							}
+						}
+					},
+					// {safe: true, upsert: true},
+					function (err) {
+						if (err) {
+							logger.error(err);
+						}
+					}
+				);
+			}
+		}
+	}.bind(this));
+};
+
+/**
+ * short hand mongoose delete document query
+ * @param  {object} options model,deleteid - id to delete,callback
+ * @return {Function} callback(err) 
+ */
+Controller.prototype.deleteModel = function (options) {
+	var model = options.model,
+		deleteid = options.deleteid,
+		// req = options.req,
+		// res = options.res,
+		callback = options.callback;
+
+	model.remove({
+		_id: deleteid
+	}, callback);
+};
+
+module.exports = Controller;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Controller.html">Controller</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Fri Oct 10 2014 18:58:42 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
