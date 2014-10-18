@@ -1,4 +1,3 @@
-
 /*
  * Controller
  * http://github.com/typesettin/periodic.core.controller
