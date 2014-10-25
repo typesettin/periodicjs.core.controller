@@ -1,7 +1,7 @@
 {
   "name": "periodicjs.core.controller",
   "description": "Customizable CMS platform",
-  "version": "1.90.119",
+  "version": "1.90.200",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
@@ -34,7 +34,6 @@
     "jsdoc": "3.3.0-alpha5",
     "grunt-newer": ">=0.7.0",
     "grunt-simple-mocha": ">=0.4.0",
-    "jsdoc": "3.3.0-alpha5",
     "mocha": "1.9.0"
   },
   "keywords": [
@@ -59,10 +58,10 @@
     "url": "https://github.com/typesettin/periodicjs.core.controllerhelper/issues"
   },
   "homepage": "https://github.com/typesettin/periodicjs.core.controllerhelper",
-  "_id": "periodicjs.core.controllerhelper@1.1.1",
-  "_shasum": "3331e335d977d76fc1784aeca7ef70f715e03b55",
-  "_from": "periodicjs.core.controllerhelper@1.1.1",
-  "_npmVersion": "1.5.0-alpha-1",
+  "_id": "periodicjs.core.controller@1.90.119",
+  "_shasum": "90f35d1e33c27afd8263988541973314f226d94c",
+  "_from": "periodicjs.core.controller@1.90.119",
+  "_npmVersion": "1.5.0-alpha-4",
   "_npmUser": {
     "name": "yawetse",
     "email": "yaw.etse@gmail.com"
@@ -74,10 +73,9 @@
     }
   ],
   "dist": {
-    "shasum": "3331e335d977d76fc1784aeca7ef70f715e03b55",
-    "tarball": "http://registry.npmjs.org/periodicjs.core.controllerhelper/-/periodicjs.core.controllerhelper-1.1.1.tgz"
+    "shasum": "90f35d1e33c27afd8263988541973314f226d94c",
+    "tarball": "http://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-1.90.119.tgz"
   },
   "directories": {},
-  "_resolved": "https://registry.npmjs.org/periodicjs.core.controllerhelper/-/periodicjs.core.controllerhelper-1.1.1.tgz",
-  "readme": "ERROR: No README data found!"
+  "_resolved": "https://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-1.90.119.tgz"
 }
