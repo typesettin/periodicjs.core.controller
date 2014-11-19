@@ -1,7 +1,7 @@
 {
   "name": "periodicjs.core.controller",
   "description": "Customizable CMS platform",
-  "version": "2.9.5",
+  "version": "3.0.0",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
@@ -58,9 +58,9 @@
     "url": "https://github.com/typesettin/periodicjs.core.controllerhelper/issues"
   },
   "homepage": "https://github.com/typesettin/periodicjs.core.controllerhelper",
-  "_id": "periodicjs.core.controller@2.0.3",
-  "_shasum": "1c6e20aac7d24724e247e52b941eb8db4c314ad7",
-  "_from": "periodicjs.core.controller@2.0.3",
+  "_id": "periodicjs.core.controller@2.9.5",
+  "_shasum": "9ced54a6098dae93f226e27ea677cf43350d27f1",
+  "_from": "periodicjs.core.controller@2.9.5",
   "_npmVersion": "2.0.0-beta.0",
   "_npmUser": {
     "name": "yawetse",
@@ -77,9 +77,9 @@
     }
   ],
   "dist": {
-    "shasum": "1c6e20aac7d24724e247e52b941eb8db4c314ad7",
-    "tarball": "http://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-2.0.3.tgz"
+    "shasum": "9ced54a6098dae93f226e27ea677cf43350d27f1",
+    "tarball": "http://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-2.9.5.tgz"
   },
   "directories": {},
-  "_resolved": "https://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-2.0.3.tgz"
+  "_resolved": "https://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-2.9.5.tgz"
 }
