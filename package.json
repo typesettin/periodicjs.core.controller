@@ -1,7 +1,7 @@
 {
   "name": "periodicjs.core.controller",
   "description": "Customizable CMS platform",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
@@ -21,7 +21,7 @@
   "dependencies": {
     "async": "0.9.0",
     "fs-extra": "0.12.0",
-    "periodicjs.core.utilities": "~3.0.0"
+    "periodicjs.core.utilities": "~3.1.1"
   },
   "devDependencies": {
     "chai": "1.10.0",
