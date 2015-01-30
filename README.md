@@ -55,5 +55,10 @@ Then run grunt watch
 $ grunt watch
 ```
 
+For generating documentation
+```
+$ grunt doc
+$ jsdoc2md index.js > doc/api.md
+```
 ##Notes
 * Check out https://github.com/typesettin/periodicjs for the full Periodic Documentation
