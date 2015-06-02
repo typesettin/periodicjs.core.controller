@@ -1,7 +1,7 @@
 {
   "name": "periodicjs.core.controller",
   "description": "Customizable CMS platform",
-  "version": "5.0.4",
+  "version": "5.0.5",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
@@ -60,9 +60,9 @@
     "url": "https://github.com/typesettin/periodicjs.core.controllerhelper/issues"
   },
   "homepage": "https://github.com/typesettin/periodicjs.core.controllerhelper",
-  "_id": "periodicjs.core.controller@4.0.1",
-  "_shasum": "481ea2f7576a45589477408666248dfa3947cd80",
-  "_from": "periodicjs.core.controller@4.0.1",
+  "_id": "periodicjs.core.controller@5.0.4",
+  "_shasum": "a6bcbb2b0345e756d7ffe74af00f81bebc3c73f7",
+  "_from": "periodicjs.core.controller@>=5.0.4 <6.0.0",
   "_npmVersion": "2.0.0-beta.0",
   "_npmUser": {
     "name": "yawetse",
