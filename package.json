@@ -1,7 +1,7 @@
 {
   "name": "periodicjs.core.controller",
   "description": "Customizable CMS platform",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
@@ -60,10 +60,10 @@
     "url": "https://github.com/typesettin/periodicjs.core.controllerhelper/issues"
   },
   "homepage": "https://github.com/typesettin/periodicjs.core.controllerhelper",
-  "_id": "periodicjs.core.controller@5.0.4",
-  "_shasum": "a6bcbb2b0345e756d7ffe74af00f81bebc3c73f7",
-  "_from": "periodicjs.core.controller@>=5.0.4 <6.0.0",
-  "_npmVersion": "2.0.0-beta.0",
+  "_id": "periodicjs.core.controller@5.0.5",
+  "_shasum": "cfa332818cf6c2b784609e7440c11f1d94133189",
+  "_from": "periodicjs.core.controller@5.0.5",
+  "_npmVersion": "2.9.0",
   "_npmUser": {
     "name": "yawetse",
     "email": "yaw.etse@gmail.com"
@@ -79,11 +79,10 @@
     }
   ],
   "dist": {
-    "shasum": "9ced54a6098dae93f226e27ea677cf43350d27f1",
-    "tarball": "http://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-2.9.5.tgz"
+    "shasum": "cfa332818cf6c2b784609e7440c11f1d94133189",
+    "tarball": "http://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-5.0.5.tgz"
   },
   "directories": {},
-  "_resolved": "https://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-2.9.5.tgz",
-  "readme": "# periodicjs.core.controller\n\nPeriodic's Core Controller module, provides helpful controller methods for querying documents and rendering responses.\n\nExtensions are node modules that are loaded when an instance of periodic is instantiated.\n\n [API Documentation](https://github.com/typesettin/periodicjs.core.controller/blob/master/doc/api.md)\n\n## Installation\n\n```\n$ npm install periodicjs.core.controller\n```\n\nThis is a part of Periodic's core.\n\n## Usage\n\n### Querying for tag\n*JavaScript*\n```javascript\nvar Controller = require('periodicjs.core.controller'),\n\tCoreController = new ControllerHelper(resources),\n\tTag = mongoose.model('Tag');\nreq.controllerData = (req.controllerData) ? req.controllerData : {};\n\nCoreController.loadModel({\n\t\tdocid: 'news',\n\t\tmodel: Tag,\n\t\tpopulation: 'contenttypes parent',\n\t\tcallback: function (err, doc) {\n\t\t\tif (err) {\n\t\t\t\tCoreController.handleDocumentQueryErrorResponse({\n\t\t\t\t\terr: err,\n\t\t\t\t\tres: res,\n\t\t\t\t\treq: req\n\t\t\t\t});\n\t\t\t}\n\t\t\telse {\n\t\t\t\treq.controllerData.tag = doc;\n\t\t\t\tnext();\n\t\t\t}\n\t\t}\n\t});\n```\n\n##Development\n*Make sure you have grunt installed*\n```\n$ npm install -g grunt-cli\n```\n\nThen run grunt watch\n```\n$ grunt watch\n```\n\nFor generating documentation\n```\n$ grunt doc\n$ jsdoc2md index.js > doc/api.md\n```\n##Notes\n* Check out https://github.com/typesettin/periodicjs for the full Periodic Documentation",
-  "readmeFilename": "README.md"
+  "_resolved": "https://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-5.0.5.tgz",
+  "_nodeVersion": "0.10.31"
 }
