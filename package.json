@@ -1,7 +1,7 @@
 {
   "name": "periodicjs.core.controller",
   "description": "Customizable CMS platform",
-  "version": "6.0.0",
+  "version": "5.9.0",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
@@ -11,6 +11,13 @@
     "email": "yaw.etse@gmail.com",
     "url": "http://about.me/yawjosephetse"
   },
+  "contributors": [
+    {
+      "name": "Jan Bialostok",
+      "email": "janbialostok@gmail.com",
+      "url": "https://github.com/janbialostok"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/typesettin/periodicjs.core.controller.git"
@@ -22,7 +29,6 @@
     "async": "0.9.0",
     "fs-extra": "^0.20.1",
     "moment": "^2.10.3",
-    "periodicjs.core.utilities": "~3.1.1",
     "pluralize": "^1.1.2",
     "string-to-json": "^0.1.0"
   },
