@@ -13,9 +13,8 @@
   },
   "contributors": [
     {
-      "name": "Jan Bialostok",
-      "email": "janbialostok@gmail.com",
-      "url": "https://github.com/janbialostok"
+      "name": "Yaw Joseph Etse",
+      "email": "yaw.etse@gmail.com"
     }
   ],
   "repository": {
@@ -27,6 +26,7 @@
   },
   "dependencies": {
     "async": "^1.2.1",
+    "bluebird": "^2.9.34",
     "fs-extra": "^0.20.1",
     "moment": "^2.10.3",
     "pluralize": "^1.1.2",
@@ -54,12 +54,6 @@
     "Content Delivery System",
     "Content Management System",
     "Periodic Decoupled Framework"
-  ],
-  "contributors": [
-    {
-      "name": "Yaw Joseph Etse",
-      "email": "yaw.etse@gmail.com"
-    }
   ],
   "gitHead": "5f461eac9506e2d6538741fef9e5854306b00258",
   "bugs": {
