@@ -1,7 +1,7 @@
 {
   "name": "periodicjs.core.controller",
   "description": "Customizable CMS platform",
-  "version": "5.9.991",
+  "version": "5.9.992",
   "main": "index.js",
   "engines": {
     "node": ">=0.12.x"
@@ -65,30 +65,33 @@
     "url": "https://github.com/typesettin/periodicjs.core.controllerhelper/issues"
   },
   "homepage": "https://github.com/typesettin/periodicjs.core.controllerhelper",
-  "_id": "periodicjs.core.controller@5.2.0",
-  "_shasum": "55fc10aa9165d1bcbe0ed4acf52992f45d1b06ca",
-  "_from": "periodicjs.core.controller@>=5.2.0 <6.0.0",
-  "_npmVersion": "2.9.0",
+  "_id": "periodicjs.core.controller@5.9.991",
+  "_shasum": "37633982dab8ce3a2325d00daaa1fd562f72a0b1",
+  "_from": "periodicjs.core.controller@5.9.991",
+  "_npmVersion": "2.11.2",
   "_npmUser": {
     "name": "yawetse",
     "email": "yaw.etse@gmail.com"
   },
   "maintainers": [
     {
-      "name": "yawetse",
-      "email": "yaw.etse@gmail.com"
-    },
-    {
       "name": "ecasilla",
       "email": "ecasilla@icloud.com"
+    },
+    {
+      "name": "janbialostok",
+      "email": "janbialostok@gmail.com"
+    },
+    {
+      "name": "yawetse",
+      "email": "yaw.etse@gmail.com"
     }
   ],
   "dist": {
-    "shasum": "55fc10aa9165d1bcbe0ed4acf52992f45d1b06ca",
-    "tarball": "http://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-5.2.0.tgz"
+    "shasum": "37633982dab8ce3a2325d00daaa1fd562f72a0b1",
+    "tarball": "http://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-5.9.991.tgz"
   },
   "directories": {},
-  "_resolved": "https://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-5.2.0.tgz",
-  "_nodeVersion": "0.10.31",
-  "readme": "ERROR: No README data found!"
+  "_resolved": "https://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-5.9.991.tgz",
+  "_nodeVersion": "0.12.6"
 }
