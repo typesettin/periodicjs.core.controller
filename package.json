@@ -1,7 +1,7 @@
 {
   "name": "periodicjs.core.controller",
   "description": "Customizable CMS platform",
-  "version": "5.9.993",
+  "version": "6.0.0",
   "main": "index.js",
   "engines": {
     "node": ">=0.12.x"
@@ -65,9 +65,9 @@
     "url": "https://github.com/typesettin/periodicjs.core.controllerhelper/issues"
   },
   "homepage": "https://github.com/typesettin/periodicjs.core.controllerhelper",
-  "_id": "periodicjs.core.controller@5.9.991",
-  "_shasum": "37633982dab8ce3a2325d00daaa1fd562f72a0b1",
-  "_from": "periodicjs.core.controller@5.9.991",
+  "_id": "periodicjs.core.controller@5.9.993",
+  "_shasum": "0bb16476cb7197372a698e044dc1e17623e7d3da",
+  "_from": "periodicjs.core.controller@>=5.9.993 <6.0.0",
   "_npmVersion": "2.11.2",
   "_npmUser": {
     "name": "yawetse",
@@ -93,5 +93,7 @@
   },
   "directories": {},
   "_resolved": "https://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-5.9.991.tgz",
-  "_nodeVersion": "0.12.6"
+  "_nodeVersion": "0.12.6",
+  "readme": "# periodicjs.core.controller\n\nPeriodic's Core Controller module, provides helpful controller methods for querying documents and rendering responses.\n\nExtensions are node modules that are loaded when an instance of periodic is instantiated.\n\n [API Documentation](https://github.com/typesettin/periodicjs.core.controller/blob/master/doc/api.md)\n\n## Installation\n\n```\n$ npm install periodicjs.core.controller\n```\n\nThis is a part of Periodic's core.\n\n## Usage\n\n### Querying for tag\n*JavaScript*\n```javascript\nvar Controller = require('periodicjs.core.controller'),\n\tCoreController = new ControllerHelper(resources),\n\tTag = mongoose.model('Tag');\nreq.controllerData = (req.controllerData) ? req.controllerData : {};\n\nCoreController.loadModel({\n\t\tdocid: 'news',\n\t\tmodel: Tag,\n\t\tpopulation: 'contenttypes parent',\n\t\tcallback: function (err, doc) {\n\t\t\tif (err) {\n\t\t\t\tCoreController.handleDocumentQueryErrorResponse({\n\t\t\t\t\terr: err,\n\t\t\t\t\tres: res,\n\t\t\t\t\treq: req\n\t\t\t\t});\n\t\t\t}\n\t\t\telse {\n\t\t\t\treq.controllerData.tag = doc;\n\t\t\t\tnext();\n\t\t\t}\n\t\t}\n\t});\n```\n\n##Development\n*Make sure you have grunt installed*\n```\n$ npm install -g grunt-cli\n```\n\nThen run grunt watch\n```\n$ grunt watch\n```\n\nFor generating documentation\n```\n$ grunt doc\n$ jsdoc2md index.js > doc/api.md\n```\n##Notes\n* Check out https://github.com/typesettin/periodicjs for the full Periodic Documentation",
+  "readmeFilename": "README.md"
 }
