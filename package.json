@@ -122,7 +122,7 @@
   "scripts": {
     "test": "mocha -R spec --recursive"
   },
-  "version": "6.2.0",
+  "version": "6.2.1",
   "_npmOperationalInternal": {
     "host": "packages-6-west.internal.npmjs.com",
     "tmp": "tmp/periodicjs.core.controller-6.1.0.tgz_1454639162688_0.7716617386322469"
