@@ -1,42 +1,4 @@
 {
-  "_args": [
-    [
-      "periodicjs.core.controller@^6.0.9",
-      "/Users/yawetse/Developer/github/promise/promise-web-application/node_modules/periodicjs"
-    ]
-  ],
-  "_from": "periodicjs.core.controller@6.1.0",
-  "_id": "periodicjs.core.controller@6.1.0",
-  "_inCache": true,
-  "_installable": true,
-  "_location": "/periodicjs.core.controller",
-  "_nodeVersion": "4.2.4",
-  "_npmUser": {
-    "name": "yawetse",
-    "email": "yaw.etse@gmail.com"
-  },
-  "_npmVersion": "2.14.12",
-  "_phantomChildren": {
-    "graceful-fs": "3.0.8",
-    "jsonfile": "2.2.3",
-    "rimraf": "2.5.0"
-  },
-  "_requested": {
-    "name": "periodicjs.core.controller",
-    "raw": "periodicjs.core.controller@^6.0.9",
-    "rawSpec": "^6.0.9",
-    "scope": null,
-    "spec": ">=6.0.9 <7.0.0",
-    "type": "range"
-  },
-  "_requiredBy": [
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-6.1.0.tgz",
-  "_shasum": "7d669a26bcb3167726fa8fb9115cc241b07178d4",
-  "_shrinkwrap": null,
-  "_spec": "periodicjs.core.controller@^6.0.9",
-  "_where": "/Users/yawetse/Developer/github/promise/promise-web-application/node_modules/periodicjs",
   "author": {
     "name": "Yaw Joseph Etse",
     "email": "yaw.etse@gmail.com",
@@ -122,9 +84,5 @@
   "scripts": {
     "test": "mocha -R spec --recursive"
   },
-  "version": "7.0.1",
-  "_npmOperationalInternal": {
-    "host": "packages-6-west.internal.npmjs.com",
-    "tmp": "tmp/periodicjs.core.controller-6.1.0.tgz_1454639162688_0.7716617386322469"
-  }
+  "version": "7.0.2"
 }
