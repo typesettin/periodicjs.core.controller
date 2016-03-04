@@ -84,5 +84,5 @@
   "scripts": {
     "test": "mocha -R spec --recursive"
   },
-  "version": "7.0.2"
+  "version": "7.0.3"
 }
