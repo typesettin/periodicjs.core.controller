@@ -45,7 +45,7 @@
     "tarball": "http://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-6.1.0.tgz"
   },
   "engines": {
-    "node": ">=0.12.x"
+    "node": ">=4.2.x"
   },
   "gitHead": "5f461eac9506e2d6538741fef9e5854306b00258",
   "homepage": "https://github.com/typesettin/periodicjs.core.controllerhelper",
@@ -84,5 +84,5 @@
   "scripts": {
     "test": "mocha -R spec --recursive"
   },
-  "version": "7.0.3"
+  "version": "7.1.0"
 }
