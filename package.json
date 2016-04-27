@@ -41,8 +41,8 @@
   },
   "directories": {},
   "dist": {
-    "shasum": "7d669a26bcb3167726fa8fb9115cc241b07178d4",
-    "tarball": "http://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-6.1.0.tgz"
+    "shasum": "fc4427ddd180df6487384686294626b175a60262",
+    "tarball": "https://registry.npmjs.org/periodicjs.core.controller/-/periodicjs.core.controller-7.1.3.tgz"
   },
   "engines": {
     "node": ">=4.2.x"
@@ -84,5 +84,7 @@
   "scripts": {
     "test": "mocha -R spec --recursive"
   },
-  "version": "7.2.0"
+  "version": "7.2.0",
+  "license": "MIT",
+  "readme": "ERROR: No README data found!"
 }
