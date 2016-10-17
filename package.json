@@ -78,6 +78,6 @@
     "scripts": {
         "test": "mocha -R spec --recursive"
     },
-    "version": "7.5.0",
+    "version": "7.5.1",
     "license": "MIT"
 }
