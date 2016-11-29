@@ -1,7 +1,19 @@
 'use strict';
 const Promisie = require('promisie');
 const xss = require('xss');
+const flatten = require('flat');
 
+/**
+ * Convenience method for .find mongo method
+ * @param  {Object}   options Options for the mongo query
+ * @param {Object} [options.model=this.model] The mongoose model for query will default to the this.model value if not defined
+ * @param {string} [options.sort=this.sort] Sorting criteria for query will default to the this.sort value if not defined
+ * @param {number} [options.limit=this.limit] Limits the total returned documents for query will default to the this.limit value if not defined
+ * @param {Object|string} [options.population=this.population] The mongoose population for query will default to the this.population value if not defined
+ * @param {Object} [options.fields=this.fields] The fields that should be returned in query will default to the this.fields value if not defined
+ * @param {number} [options.skip] The number of documents to offset in query
+ * @param  {Function} cb      Callback function for search
+ */
 const _SEARCH = function (options, cb) {
 	try {
 		let Model = options.model || this.model;
@@ -20,6 +32,17 @@ const _SEARCH = function (options, cb) {
 	}
 };
 
+/**
+ * Convenience method for returning a stream of mongo data
+ * @param  {Object}   options Options for the mongo query
+ * @param {Object} [options.model=this.model] The mongoose model for query will default to the this.model value if not defined
+ * @param {string} [options.sort=this.sort] Sorting criteria for query will default to the this.sort value if not defined
+ * @param {number} [options.limit=this.limit] Limits the total returned documents for query will default to the this.limit value if not defined
+ * @param {Object|string} [options.population=this.population] The mongoose population for query will default to the this.population value if not defined
+ * @param {Object} [options.fields=this.fields] The fields that should be returned in query will default to the this.fields value if not defined
+ * @param {number} [options.skip] The number of documents to offset in query
+ * @param  {Function} cb      Callback function for stream
+ */
 const _STREAM = function (options, cb) {
 	try {
 		let Model = options.model || this.model;
@@ -39,6 +62,18 @@ const _STREAM = function (options, cb) {
 	}
 };
 
+/**
+ * Convenience method for .find mongo method with built in pagination of data
+ * @param  {Object}   options Options for the mongo query
+ * @param {Object} [options.model=this.model] The mongoose model for query will default to the this.model value if not defined
+ * @param {string} [options.sort=this.sort] Sorting criteria for query will default to the this.sort value if not defined
+ * @param {number} [options.limit=this.limit] Limits the total returned documents for query will default to the this.limit value if not defined
+ * @param {number} [options.pagelength=this.pagelength] Defines the max length of each sub-set of data
+ * @param {Object|string} [options.population=this.population] The mongoose population for query will default to the this.population value if not defined
+ * @param {Object} [options.fields=this.fields] The fields that should be returned in query will default to the this.fields value if not defined
+ * @param {number} [options.skip] The number of documents to offset in query
+ * @param  {Function} cb      Callback function for search
+ */
 const _SEARCH_WITH_PAGINATION = function (options, cb) {
 	try {
 		let Model = options.model || this.model;
@@ -72,6 +107,17 @@ const _SEARCH_WITH_PAGINATION = function (options, cb) {
 	}
 };
 
+/**
+ * Convenience method for .findOne or .findById mongoose methods
+ * @param  {Object}   options Configurable options for mongo query
+ * @param {Object} [options.model=this.model] The mongoose model for query will default to the this.model value if not defined
+ * @param {string} [options.sort=this.sort] Sorting criteria for query will default to the this.sort value if not defined
+ * @param {Object|string} [options.population=this.population] The mongoose population for query will default to the this.population value if not defined
+ * @param {Object} [options.fields=this.fields] The fields that should be returned in query will default to the this.fields value if not defined
+ * @param {string} [options.docid="_id"] A field that should be queried will default to "_id"
+ * @param {Object|string|number} options.query If value is an object query will be set to the value otherwise a query will be built based on options.docid and any other value provided in options.query
+ * @param  {Function} cb      Callback function for load
+ */
 const _LOAD = function (options, cb) {
 	try {
 		let Model = options.model || this.model;
@@ -91,6 +137,87 @@ const _LOAD = function (options, cb) {
 	}
 };
 
+/**
+ * Creates a mongoose update operation that only uses $set and $push
+ * @param {Object} data Any fields that should be updated as part of patch
+ * @return {Object} Returns an object with $set and $push properties
+ */
+const GENERATE_PATCH = function (data) {
+	delete data._id;
+	delete data.__v;
+	let flattened = flatten(data, { safe: true });
+	let $set = {};
+	let $push = {};
+	for (let key in flattened) {
+		if (Array.isArray(flattened[key])) $push[key] = { $each: flattened[key] };
+		else $set[key] = flattened[key];
+	}
+	return { $set, $push };
+};
+
+/**
+ * Returns a cleaned object for a full document update
+ * @param {Object} data A full document with updated data for put
+ * @return {Object} Returns original object with reserved fields removed
+ */
+const GENERATE_PUT = function (data) {
+	delete data._id;
+	delete data.__v;
+	return data;
+};
+
+/**
+ * Convenience method for .update mongo method
+ * @param  {Object}   options Configurable options for mongo update
+ * @param {Boolean} options.isPatch If true the update will be treated as a patch instead of a full document update
+ * @param {Object} options.updatedoc Either specific fields to update in the case of a patch otherwise the entire updatedated document
+ * @param {string} options.id The mongo _id of the document that should be updated
+ * @param {Object} [options.model=this.model] The mongoose model for query will default to the this.model value if not defined
+ * @param  {Function} cb      Callback function for update
+ */
+const _UPDATE = function (options, cb) {
+	try {
+		let usePatch = options.isPatch;
+		let xss_whitelist = (options.xss_whitelist) ? options.xss_whitelist : this.xss_whitelist;
+		options.updatedoc = (xss_whitelist) ? JSON.parse(xss(JSON.stringify(options.updatedoc), xss_whitelist)) : options.updatedoc;
+		let updateOperation = (usePatch) ? GENERATE_PATCH(options.updatedoc) : GENERATE_PUT(options.updatedoc);
+		let Model = options.model || this.model;
+		Model.update({ _id: options.id }, updateOperation, cb);
+	}
+	catch (e) {
+		cb(e);
+	}
+};
+
+/**
+ * Convenience method for .findAndUpdate mongoose method (returns updated document instead of normal mongo update status object)
+ * @param  {Object}   options Configurable options for mongo update
+ * @param {Boolean} options.isPatch If true the update will be treated as a patch instead of a full document update
+ * @param {Object} options.updatedoc Either specific fields to update in the case of a patch otherwise the entire updatedated document
+ * @param {string} options.id The mongo _id of the document that should be updated
+ * @param {Object} [options.model=this.model] The mongoose model for query will default to the this.model value if not defined
+ * @param  {Function} cb      Callback function for update
+ */
+const _UPDATED = function (options, cb) {
+	try {
+		_UPDATE.call(this, options, (err) => {
+			if (err) cb(err);
+			else _LOAD.call(this, { model: options.model, query: options.id }, cb);
+		});
+	}
+	catch (e) {
+		cb(e);
+	}
+};
+
+/**
+ * Convenience method for .create mongoose method
+ * @param  {Object}   options Configurable options for mongo create
+ * @param {Object} [options.model=this.model] The mongoose model for query will default to the this.model value if not defined
+ * @param {Object} [options.newdoc=options] The document that should be created. If newdoc option is not passed it is assumed that the entire options object is the document
+ * @param {string[]}  [options.xss_whitelist=this.xss_whitelist] XSS white-list configuration
+ * @param  {Function} cb      Callback function for create
+ */
 const _CREATE = function (options, cb) {
 	try {
 		let Model = options.model || this.model;
@@ -145,7 +272,9 @@ const MONGO_ADAPTER = class Mongo_Adapter {
 		else return Promisie.promisify(_load)(options);
 	}
 	update (options = {}, cb = false) {
-
+		let _update = (options.return_updated) ? _UPDATED.bind(this) : _UPDATE.bind(this);
+		if (typeof cb === 'function') _update(options, cb);
+		else return Promisie.promisify(_update)(options);
 	}
 	create (options = {}, cb = false) {
 		let _create = _CREATE.bind(this);
