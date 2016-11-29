@@ -46,6 +46,7 @@ const _SEARCH_WITH_PAGINATION = function (options, cb) {
 			result[key] = options[key] || this[key];
 		}, {});
 		let pages = {};
+		let total = 0;
 		let index = 0;
 		Promisie.doWhilst(() => {
 			return new Promisie((resolve, reject) => {
@@ -53,6 +54,7 @@ const _SEARCH_WITH_PAGINATION = function (options, cb) {
 					if (err) reject(err);
 					else {
 						skip += data.length;
+						total += data.length;
 						pages[index++] = {
 							documents: data,
 							count: data.length
@@ -61,7 +63,7 @@ const _SEARCH_WITH_PAGINATION = function (options, cb) {
 					}
 				});
 			});
-		}, current => current === pagelength)
+		}, current => (current === pagelength && total < limit))
 			.then(() => cb(null, pages))
 			.catch(cb);
 	}
@@ -142,7 +144,7 @@ const MONGO_ADAPTER = class Mongo_Adapter {
 		if (typeof cb === 'function') _load(options, cb);
 		else return Promisie.promisify(_load)(options);
 	}
-	update (options, cb) {
+	update (options = {}, cb = false) {
 
 	}
 	create (options = {}, cb = false) {
