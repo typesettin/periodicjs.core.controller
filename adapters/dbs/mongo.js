@@ -230,6 +230,14 @@ const _CREATE = function (options, cb) {
 	}
 };
 
+/**
+ * Convenience method for .remove mongoose method
+ * @param  {Object}   options Configurable options for mongo delete
+ * @param {Object} [options.model=this.model] The mongoose model for query will default to the this.model value if not defined
+ * @param {string} options.deleteid The mongo id of the document that should be removed
+ * @param {string} options.id If options.deleteid is provided this value is ignored - alias for options.deleteid
+ * @param  {Function} cb      Callback function for delete
+ */
 const _DELETE = function (options, cb) {
 	try {
 		let Model = options.model || this.model;
@@ -242,7 +250,49 @@ const _DELETE = function (options, cb) {
 	}
 };
 
+/**
+ * Convenience method for .remove mongoose method but returns the deleted document
+ * @param  {Object}   options Configurable options for mongo delete
+ * @param {Object} [options.model=this.model] The mongoose model for query will default to the this.model value if not defined
+ * @param {string} options.deleteid The mongo id of the document that should be removed
+ * @param {string} options.id If options.deleteid is provided this value is ignored - alias for options.deleteid
+ * @param  {Function} cb      Callback function for delete
+ */
+const _DELETED = function (options, cb) {
+	try {
+		_LOAD.call(this, { model: options.model, query: options.deleteid || options.id }, (err1, loaded) => {
+			if (err1) cb(err1);
+			else {
+				_DELETE.call(this, options, (err2) => {
+					if (err2) cb(err2);
+					else cb(null, loaded);
+				});
+			}
+		});
+	}
+	catch (e) {
+		cb(e);
+	}
+};
+
+/**
+ * An mongoose specific adapter which provides CRUD methods for a given model
+ * @class Mongo_Adapter
+ */
 const MONGO_ADAPTER = class Mongo_Adapter {
+	/**
+	 * @constructor
+	 * @param  {Object} [options={}] Configurable options for the mongo adapter
+	 * @param {string} options.docid Specifies the field which should be queried by default for .load
+	 * @param {Object} options.model Mongoose model that should be used in CRUD operations by default
+	 * @param {Object|string} [options.sort="-createdat"] Specifies default sort logic for .search queries
+	 * @param {number} [options.limit=500] Specifies a default limit to the total documents returned in a .search query
+	 * @param {number} [options.offset=0] Specifies a default amount of documents to skip in a .search query
+	 * @param {Object|string} [options.population] Optional population configuration for documents returned in .load and .search queries
+	 * @param {Object} [options.fields] Optional configuration for limiting fields that are returned in .load and .search queries
+	 * @param {number} [options.pagelength=15] Specifies max number of documents that should appear in each sub-set for pagination
+	 * @param {string[]} [options.xss_whitelist=false] Configuration for XSS whitelist package. If false XSS whitelisting will be ignored
+	 */
 	constructor (options = {}) {
 		this.docid = options.docid;
 		this.model = options.model;
@@ -256,33 +306,72 @@ const MONGO_ADAPTER = class Mongo_Adapter {
 		this.xss_whitelist = options.xss_whitelist || false;
 		this._useCache = (options.useCache && options.cache) ? true : false;
 	}
+	/**
+	 * Search method for adapter see _SEARCH and _SEARCH_WITH_PAGINATION for more details
+	 * @param  {Object}  [options={}] Configurable options for search
+	 * @param {Boolean} options.paginate When true search will return data in a paginated form
+	 * @param  {Function} [cb=false]     Callback argument. When cb is not passed function returns a Promise
+	 * @return {Object}          Returns a Promise when cb argument is not passed
+	 */
 	search (options = {}, cb = false) {
 		let _search = (options && options.paginate) ? _SEARCH_WITH_PAGINATION.bind(this) : _SEARCH.bind(this);
 		if (typeof cb === 'function') _search(options, cb);
 		else return Promisie.promisify(_search)(options);
 	}
+	/**
+	 * Stream method for adapter see _STREAM for more details
+	 * @param  {Object}  [options={}] Configurable options for stream
+	 * @param  {Function} [cb=false]     Callback argument. When cb is not passed function returns a Promise
+	 * @return {Object}          Returns a Promise when cb argument is not passed
+	 */
 	stream (options = {}, cb = false) {
 		let _stream = _STREAM.bind(this);
 		if (typeof cb === 'function') _stream(options, cb);
 		else return Promisie.promisify(_stream)(options);
 	}
+	/**
+	 * Load method for adapter see _LOAD for more details
+	 * @param  {Object}  [options={}] Configurable options for load
+	 * @param  {Function} [cb=false]     Callback argument. When cb is not passed function returns a Promise
+	 * @return {Object}          Returns a Promise when cb argument is not passed
+	 */
 	load (options = {}, cb = false) {
 		let _load = _LOAD.bind(this);
 		if (typeof cb === 'function') _load(options, cb);
 		else return Promisie.promisify(_load)(options);
 	}
+	/**
+	 * Update method for adapter see _UPDATE and _UPDATED for more details
+	 * @param  {Object}  [options={}] Configurable options for update
+	 * @param {Boolean} options.return_updated If true update method will return the updated document instead of an update status message
+	 * @param  {Function} [cb=false]     Callback argument. When cb is not passed function returns a Promise
+	 * @return {Object}          Returns a Promise when cb argument is not passed
+	 */
 	update (options = {}, cb = false) {
 		let _update = (options.return_updated) ? _UPDATED.bind(this) : _UPDATE.bind(this);
 		if (typeof cb === 'function') _update(options, cb);
 		else return Promisie.promisify(_update)(options);
 	}
+	/**
+	 * Create method for adapter see _CREATE for more details
+	 * @param  {Object}  [options={}] Configurable options for create
+	 * @param  {Function} [cb=false]     Callback argument. When cb is not passed function returns a Promise
+	 * @return {Object}          Returns a Promise when cb argument is not passed
+	 */
 	create (options = {}, cb = false) {
 		let _create = _CREATE.bind(this);
 		if (typeof cb === 'function') _create(options, cb);
 		else return Promisie.promisify(_create)(options);
 	}
+	/**
+	 * Delete method for adapter see _DELETE and _DELETED for more details
+	 * @param  {Object}  [options={}] Configurable options for create
+	 * @param {Boolean} options.return_deleted If true delete method will return the deleted document
+	 * @param  {Function} [cb=false]     Callback argument. When cb is not passed function returns a Promise
+	 * @return {Object}          Returns a Promise when cb argument is not passed
+	 */
 	delete (options = {}, cb = false) {
-		let _delete = _DELETE.bind(this);
+		let _delete = (options.return_deleted) ? _DELETED.bind(this) : _DELETE.bind(this);
 		if (typeof cb === 'function') _delete(options, cb);
 		else return Promisie.promisify(_delete)(options);
 	}
