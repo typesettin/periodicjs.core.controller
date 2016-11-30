@@ -1,7 +1,9 @@
 'use strict';
+const path = require('path');
 const Promisie = require('promisie');
 const xss = require('xss');
 const flatten = require('flat');
+const utility = require(path.join(__dirname, '../../utility/index'));
 
 /**
  * Convenience method for .find mongo method
@@ -178,7 +180,9 @@ const GENERATE_PUT = function (data) {
 const _UPDATE = function (options, cb) {
 	try {
 		let usePatch = options.isPatch;
+		let depopulate = (options.depopulate === false) ? false : true;
 		let xss_whitelist = (options.xss_whitelist) ? options.xss_whitelist : this.xss_whitelist;
+		options.updatedoc = (depopulate) ? utility.depopulate(options.updatedoc) : options.updatedoc;
 		options.updatedoc = (xss_whitelist) ? JSON.parse(xss(JSON.stringify(options.updatedoc), xss_whitelist)) : options.updatedoc;
 		let updateOperation = (usePatch) ? GENERATE_PATCH(options.updatedoc) : GENERATE_PUT(options.updatedoc);
 		let Model = options.model || this.model;

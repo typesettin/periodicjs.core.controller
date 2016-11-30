@@ -28,9 +28,8 @@
   "description": "Customizable CMS platform",
   "devDependencies": {
     "async": "^2.0.0-rc.3",
-    "fs-extra": "^0.30.0",
-    "moment": "^2.13.0",
     "chai": "^3.0.0",
+    "fs-extra": "^0.30.0",
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-watch": "^0.6.1",
@@ -40,6 +39,8 @@
     "grunt-simple-mocha": "^0.4.0",
     "jsdoc": "^3.3.2",
     "mocha": "^2.2.5",
+    "moment": "^2.13.0",
+    "mongoose": "~4.4.14",
     "promisie": "^1.5.0"
   },
   "directories": {},
