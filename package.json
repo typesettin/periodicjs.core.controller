@@ -20,6 +20,7 @@
   "dependencies": {
     "flat": "^2.0.1",
     "objectcompare": "^0.2.0",
+    "periodicjs.core.data": "0.0.1",
     "pluralize": "^1.1.2",
     "string-to-json": "^0.1.0",
     "valid-objectid": "0.0.1",
