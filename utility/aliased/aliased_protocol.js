@@ -1,6 +1,8 @@
 'use strict';
 const path = require('path');
-const wrapWithDeprecationWarning = require(path.join(__dirname, './deprecate'));
+const pluralize = require('pluralize');
+const capitalize = require('capitalize');
+const wrapWithDeprecationWarning = require(path.join(__dirname, '../deprecate'));
 
 var _getPluginViewDefaultTemplate = function () {
 	let fn = function getPluginViewDefaultTemplate (opts = {}, callback) {
@@ -95,20 +97,22 @@ var _renderView = function () {
 	return wrapWithDeprecationWarning.call(this, fn, message);
 };
 
-var _getViewModelProperties = function (options = {}) {
-	let model_name = options.model_name;
-	let viewmodel = {
-		name: model_name,
-		name_plural: pluralize(model_name)
+var _getViewModelProperties = function () {
+	return function (options = {}) {
+		let model_name = options.model_name;
+		let viewmodel = {
+			name: model_name,
+			name_plural: pluralize(model_name)
+		};
+		return Object.assign(viewmodel, {
+			capital_name: capitalize(model_name),
+			page_plural_title: capitalize(viewmodel.name_plural),
+			page_plural_count: `${ viewmodel.name_plural }count`,
+			page_plural_query: `${ viewmodel.name_plural }query`,
+			page_single_count: `${ model_name }count`,
+			page_pages: `${ model_name }pages`
+		});
 	};
-	return Object.assign(viewmodel, {
-		capital_name: capitalize(model_name),
-		page_plural_title: capitalize(viewmodel.name_plural),
-		page_plural_count: `${ viewmodel.name_plural }count`,
-		page_plural_query: `${ viewmodel.name_plural }query`,
-		page_single_count: `${ model_name }count`,
-		page_pages: `${ model_name }pages`
-	});
 };
 
 module.exports = {

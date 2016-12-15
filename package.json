@@ -18,9 +18,11 @@
     }
   ],
   "dependencies": {
+    "capitalize": "^1.0.0",
     "periodicjs.core.data": "~0.0.7",
     "periodicjs.core.protocols": "~0.0.9",
-    "periodicjs.core.responder": "~0.0.7"
+    "periodicjs.core.responder": "~0.0.7",
+    "pluralize": "~1.1.2"
   },
   "description": "Customizable CMS platform",
   "devDependencies": {

@@ -1,12 +1,12 @@
 'use strict';
 const util = require('util');
 
-module.exports = function wrapWithDeprecationWarning (fn, message) {
-	let isFirst = true;
+module.exports = function wrapWithDeprecationWarning (fn, message, times = 1) {
+	let isFirst = times;
 	fn = fn.bind(this);
 	return function () {
 		if (isFirst) {
-			isFirst = false;
+			isFirst--
 			return util.deprecate(fn, message)(...arguments);
 		}
 		return fn(...arguments);
