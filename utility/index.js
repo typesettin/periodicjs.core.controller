@@ -5,6 +5,7 @@ const loggers = require(path.join(__dirname, './aliased/aliased_logger'));
 const middleware = require(path.join(__dirname, './middleware'));
 const protocols = require(path.join(__dirname, './aliased/aliased_protocol'));
 const data = require(path.join(__dirname, './aliased/aliased_data'));
-const aliased = Object.assign({}, loggers, protocols, data);
+const rest = require(path.join(__dirname, './aliased/aliased_rest'));
+const aliased = Object.assign({}, loggers, protocols, data, rest);
 
 module.exports = { traps, aliased, middleware };
