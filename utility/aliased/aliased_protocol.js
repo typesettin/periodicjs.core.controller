@@ -4,10 +4,24 @@ const pluralize = require('pluralize');
 const capitalize = require('capitalize');
 const wrapWithDeprecationWarning = require(path.join(__dirname, '../deprecate'));
 
+/**
+ * Creates a function that will resolve a template file path from a set of directories. Alias for CoreController._utility_responder.render
+ * @return {Function} A function that will resolve a valid file path for a template
+ */
 var _getPluginViewDefaultTemplate = function () {
+	/**
+	 * Get a valid file path for a template file from a set of directories
+	 * @param  {Object}   opts     Configurable options
+	 * @param {string} [opts.extname] Periodic extension that may contain view file
+	 * @param {string} opts.viewname Name of the template file
+	 * @param {string} [opts.themefileext="periodicjs.theme.default"] Periodic theme that may contain view file
+	 * @param {string} [opts.viewfileext=".ejs"] File extension type
+	 * @param  {Function} callback Callback function
+	 * @return {Object}          Returns a Promise which resolves with file path if cb argument is not passed
+	 */
 	let fn = function getPluginViewDefaultTemplate (opts = {}, callback) {
 		let { extname, viewname, themefileext, viewfileext } = opts;
-		let themename = theme;
+		let themename = this.theme;
 		let fileext = (typeof themefileext === 'string') ? themefileext : viewfileext;
 		return this._utility_responder.render({}, Object.assign(opts, { themename, fileext, resolve_filepath: true }), callback);
 	};
@@ -34,7 +48,7 @@ var _respondInKind = function () {
 var _handleDocumentQueryRender = function () {
 	let fn = function handleDocumentQueryRender (opts = {}, callback) {
 		let { extname, viewname, themefileext, viewfileext } = opts;
-		let themename = theme;
+		let themename = this.theme;
 		let fileext = (typeof themefileext === 'string') ? themefileext : viewfileext;
 		return this._utility_responder.render({}, Object.assign(opts, { themename, fileext }))
 			.then(result => {
@@ -84,7 +98,7 @@ var _handleDocumentQueryErrorResponse = function () {
 var _renderView = function () {
 	let fn = function renderView (req, res, viewtemplate, viewdata) {
 		let { extname, viewname, themefileext, viewfileext } = opts;
-		let themename = theme;
+		let themename = this.theme;
 		let fileext = (typeof themefileext === 'string') ? themefileext : viewfileext;
 		return this._utility_responder.render({}, Object.assign(opts, { themename, fileext }))
 			.then(result => {

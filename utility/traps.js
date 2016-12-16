@@ -3,6 +3,11 @@ const DIRECT = ['protocol', 'db', 'responder', 'initialize_responder', 'initiali
 const INACCESSIBLE = ['protocol', 'db', 'responder'];
 const DBOPS = ['query', 'search', 'stream', 'load', 'update', 'create', 'delete'];
 
+/**
+ * Creates a get and set trap for a Proxy. Get trap looks through child adapters to find methods nested within parent CoreController instance
+ * @param  {Object} parent A parent CoreController instance
+ * @return {Object}        Returns an object with "get" and "set" keys which represent get and set traps for a Proxy
+ */
 module.exports = function initialize_traps (parent) {
 	let get = function (target, property) {
 		if (DIRECT.indexOf(property) !== -1) return (typeof parent[property] === 'function') ? parent[property].bind(parent) : parent[property];
