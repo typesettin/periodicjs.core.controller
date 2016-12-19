@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: utility/aliased/aliased_logger.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,70 +17,63 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: utility/aliased/aliased_logger.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><h1>periodicjs.core.controller</h1><p>Periodic's Core Controller module, provides helpful controller methods for querying documents and rendering responses.</p>
-<p>Extensions are node modules that are loaded when an instance of periodic is instantiated.</p>
-<p> <a href="https://github.com/typesettin/periodicjs.core.controller/blob/master/doc/api.md">API Documentation</a></p>
-<h2>Installation</h2><pre class="prettyprint source"><code>$ npm install periodicjs.core.controller</code></pre><p>This is a part of Periodic's core.</p>
-<h2>Usage</h2><h3>Querying for tag</h3><p><em>JavaScript</em></p>
-<pre class="prettyprint source lang-javascript"><code>var Controller = require('periodicjs.core.controller'),
-    CoreController = new ControllerHelper(resources),
-    Tag = mongoose.model('Tag');
-req.controllerData = (req.controllerData) ? req.controllerData : {};
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+const path = require('path');
+const wrapWithDeprecationWarning = require(path.join(__dirname, '../deprecate'));
 
-CoreController.loadModel({
-        docid: 'news',
-        model: Tag,
-        population: 'contenttypes parent',
-        callback: function (err, doc) {
-            if (err) {
-                CoreController.handleDocumentQueryErrorResponse({
-                    err: err,
-                    res: res,
-                    req: req
-                });
-            }
-            else {
-                req.controllerData.tag = doc;
-                next();
-            }
-        }
-    });</code></pre><p>##Development<br><em>Make sure you have grunt installed</em></p>
-<pre class="prettyprint source"><code>$ npm install -g grunt-cli</code></pre><p>Then run grunt watch</p>
-<pre class="prettyprint source"><code>$ grunt watch</code></pre><p>For generating documentation</p>
-<pre class="prettyprint source"><code>$ grunt doc
-$ jsdoc2md lib/**/*.js utility/**/*.js index.js > doc/api.md</code></pre><p>##Notes</p>
-<ul>
-<li>Check out https://github.com/typesettin/periodicjs for the full Periodic Documentation</li>
-</ul></article>
+/**
+ * Logs an error. Alias for CoreController.protocol.error or CoreController.meta.error
+ * @return {Function} Returns a function which logs an error using the CoreController logger
+ */
+var _logError = function () {
+	/**
+	 * Logs an error
+	 * @param  {Object}   options Configurable options for error logging
+	 * @param {Object} options.req Express request object
+	 * @param {Object} options.res Express response object
+	 * @param {Object|string} options.err Error object or an error message
+	 */
+	let fn = function logError (options = {}) {
+		return this.protocol.error(options.req, options.res, { err: options.err });
+	};
+	let message = 'CoreController.logError: Use CoreController.protocol.error or CoreController.meta.error instead';
+	return wrapWithDeprecationWarning.call(this, fn, message);
+};
+
+/**
+ * Logs a warning. Alias for CoreController.protocol.warn or CoreController.meta.warn
+ * @return {Function}         Returns a function which logs warnings using CoreController logger
+ */
+var _logWarning = function () {
+	/**
+	 * Logs a warning
+	 * @param  {Object}   options Configurable options for warning logging
+	 * @param {Object} options.req Express request object
+	 * @param {Object} options.res Express response object
+	 * @param {Object|string} options.err Error object or an warning message
+	 */
+	let fn = function logWarning (options = {}) {
+		return this.protocol.warn(options.req, options.res, { err: options.err });
+	};
+	let message = 'CoreController.logWarning: Use CoreController.protocol.warn or CoreController.meta.warn instead';
+	return wrapWithDeprecationWarning.call(this, fn, message);
+};
+
+module.exports = { 
+	logError: _logError, 
+	logWarning: _logWarning 
+};</code></pre>
+        </article>
     </section>
-
-
 
 
 
