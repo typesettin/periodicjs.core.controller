@@ -11,7 +11,7 @@ const wrapWithDeprecationWarning = require(path.join(__dirname, '../deprecate'))
 var _getPluginViewDefaultTemplate = function () {
 	/**
 	 * Get a valid file path for a template file from a set of directories
-	 * @param  {Object}   opts     Configurable options
+	 * @param  {Object}   opts     Configurable options (see periodicjs.core.protocols for more details)
 	 * @param {string} [opts.extname] Periodic extension that may contain view file
 	 * @param {string} opts.viewname Name of the template file
 	 * @param {string} [opts.themefileext="periodicjs.theme.default"] Periodic theme that may contain view file
@@ -29,23 +29,54 @@ var _getPluginViewDefaultTemplate = function () {
 	return wrapWithDeprecationWarning.call(this, fn, message);
 };
 
+/**
+ * Creates a function that will send a HTTP response or return a formatted response object. Alias for CoreController.protocol.respond
+ * @return {Function} A function that will format response data and send a response
+ */
 var _respondInKind = function () {
+	/**
+	 * Sends response data to client or returns formatted response data
+	 * @param  {Object}   opts     Configurable options (see periodicjs.core.protocols for more details)
+	 * @param {Function} opts.callback An optional callback. If this options is defined callback argument will be ignored
+	 * @param {*} opts.responseData Data to include in response object. If opts.err is defined this option will be ignored and the response will be treated as an error response
+	 * @param {*} opts.err Error data. If this option is defined response will always be an error response unless .ignore_error is true
+	 * @param {Object} opts.req Express request object
+	 * @param {Object} opts.res Express response object
+	 * @param  {Function} [callback] Optional callback function
+	 * @return {Function}         If callback is not defined optionally returns a Promise which will resolve response data
+	 */
 	let fn = function respondInKind (opts = {}, callback) {
-		let { req, res, responseData } = opts;
+		let { req, res, responseData, err } = opts;
 		opts.callback = (typeof opts.callback === 'function') ? opts.callback : callback;
 		if ((path.extname(req.originalUrl) === '.html' || req.is('html') || req.is('text/html') || path.extname(req.originalUrl) === '.htm') || typeof opts.callback === 'function') {
-			this.protocol.respond(req, res, { data: responseData, return_response_data: true })
+			return this.protocol.respond(req, res, { data: responseData, err, return_response_data: true })
 				.then(result => opts.callback(req, res, result))
 				.catch(e => this.protocol.error(req, res, { err: e }));
 		}
-		else if (req.redirecturl) this.protocol.redirect(req, res);
-		else this.protocol.respond(req, res, { data: responseData });
+		else if (req.redirecturl) return this.protocol.redirect(req, res);
+		else return this.protocol.respond(req, res, { data: responseData });
 	};
 	let message = 'CoreController.respondInKind: Use CoreController.protocol.respond with a HTTP adapter instead';
 	return wrapWithDeprecationWarning.call(this, fn, message);
 };
 
+/**
+ * Creates a function that will render a template and send HTTP response to client. Alias for CoreController._utility_responder.render
+ * @return {Function} A function that will render a template and send data to client
+ */
 var _handleDocumentQueryRender = function () {
+	/**
+	 * Renders a view from template and sends data to client
+	 * @param  {Object}   opts     Configurable options (see periodicjs.core.responder for more details)
+	 * @param {string} opts.extname Periodic extension which may have template in view folder
+	 * @param {string} opts.viewname Name of template file
+	 * @param {string} opts.themefileext Periodic theme which may have template in view folder
+	 * @param {string} opts.viewfileext The file extension of the view file
+	 * @param {Object} opts.req Express request object
+	 * @param {Object} opts.res Express response object
+	 * @param  {Function} [callback] Optional callback function
+	 * @return {Function}          If callback is not defined returns a Promise which resolves with rendered template
+	 */
 	let fn = function handleDocumentQueryRender (opts = {}, callback) {
 		let { extname, viewname, themefileext, viewfileext } = opts;
 		let themename = this.theme;
@@ -68,26 +99,39 @@ var _handleDocumentQueryRender = function () {
 	return wrapWithDeprecationWarning.call(this, fn, message);
 };
 
+/**
+ * Creates a function that will render an error view from a template. Alias for CoreController._utility_responder.error
+ * @return {Function} A function that will render an error view from a template and send response
+ */
 var _handleDocumentQueryErrorResponse = function () {
-	let fn = function handleDocumentQueryErrorResponse (opts = {}, cb) {
+	/**
+	 * Renders an error view from a template and sends data to client
+	 * @param  {Object}   opts Configurable options (see periodicjs.core.responder for more details)
+	 * @param {string|Object} opts.err Error details for response
+	 * @param {Object} opts.req Express request object
+	 * @param {Object} opts.res Express response object
+	 * @param  {Function} [callback]   Optional callback function
+	 * @return {Object}      If callback is not defined returns a Promise which resolves after response has been sent
+	 */
+	let fn = function handleDocumentQueryErrorResponse (opts = {}, callback) {
 		let { err, req, res } = opts;
 		if (opts.use_warning) this.protocol.warn(req, res, { err });
 		else this.protocol.error(req, res, { err });
 		if (req.query.format === 'json' || req.params.ext === 'json' || path.extname(req.originalUrl) === '.json' || req.is('json') || req.params.callback || req.is('application/json')) {
-			this.protocol.respond(req, res, { err });
+			return this.protocol.respond(req, res, { err });
 		}
 		else if (typeof callback === 'function') {
-			this.responder.error(err)
+			return this.responder.error(err)
 				.then(result => callback(null, result))
 				.catch(callback);
 		}
 		else if (req.redirecturl) this.protocol.redirect(req, res);
 		else {
-			this._utility_responder.error(err, {})
+			return this._utility_responder.error(err, {})
 				.then(result => {
-					this.protocol.respond(req, res, { responder_override: result });
+					return this.protocol.respond(req, res, { responder_override: result });
 				}, err => {
-					this.protocol.exception(req, res, { err })
+					return this.protocol.exception(req, res, { err });
 				});
 		}
 	};
@@ -95,12 +139,21 @@ var _handleDocumentQueryErrorResponse = function () {
 	return wrapWithDeprecationWarning.call(this, fn, message);
 };
 
+/**
+ * Creates a function that will render data from a view put can accept additional data for the template and always send a response. Alias for CoreController.protocol.respond
+ * @return {Function} A function that will render a view from a template given template data
+ */
 var _renderView = function () {
+	/**
+	 * Renders a view from a template given template data
+	 * @param  {Object}   req          Express request object
+	 * @param  {Object}   res          Express response object
+	 * @param  {string}   viewtemplate File path for the view template. By default render will check if file exists in configured default theme and periodicjs extension as well as the viewname as an absolute path
+	 * @param  {Object}   viewdata     Data that should be passed for template render
+	 */
 	let fn = function renderView (req, res, viewtemplate, viewdata) {
-		let { extname, viewname, themefileext, viewfileext } = opts;
 		let themename = this.theme;
-		let fileext = (typeof themefileext === 'string') ? themefileext : viewfileext;
-		return this._utility_responder.render({}, Object.assign(opts, { themename, fileext }))
+		return this._utility_responder.render(viewdata, { viewname: viewtemplate })
 			.then(result => {
 				this.protocol.respond(req, res, { responder_override: result });
 			}, err => {
@@ -111,8 +164,18 @@ var _renderView = function () {
 	return wrapWithDeprecationWarning.call(this, fn, message);
 };
 
+/**
+ * Creates a function that will get inflected values from a given string
+ * @return {Function} A function that will get inflected values from a given string
+ */
 var _getViewModelProperties = function () {
-	return function (options = {}) {
+	/**
+	 * Returns inflected values from a string ie. application => applications, Application, etc.
+	 * @param  {Object} options Configurable options
+	 * @param {string} options.model_name String that should be inflected
+	 * @return {Object}         Object containing inflected values indexed by type of inflection
+	 */
+	return function getViewModelProperties (options = {}) {
 		let model_name = options.model_name;
 		let viewmodel = {
 			name: model_name,

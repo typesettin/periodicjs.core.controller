@@ -3,6 +3,11 @@ const path = require('path');
 const wrapWithDeprecationWarning = require(path.join(__dirname, '../deprecate'));
 
 var _controller_edit = function () {
+	/**
+	 * Creates a middleware function that will render and "edit" view given a configuration. Alias for CoreController.protocol.api.initialize.EDIT or CoreController.meta.initialize_edit
+	 * @param  {Object}   options Configurable options for "edit" view middleware (see periodicjs.core.protocols for more details)
+	 * @return {Function}         "edit" view middeware
+	 */
 	let fn = function controller_edit (options = {}) {
 		return this.protocol.api.initialize.EDIT(options);
 	};
@@ -11,6 +16,11 @@ var _controller_edit = function () {
 };
 
 var _controller_show = function (options = {}) {
+	/**
+	 * Creates a middleware function that will render and "show" view given a configuration. Alias for CoreController.protocol.api.initialize.SHOW or CoreController.meta.initialize_show
+	 * @param  {Object}   options Configurable options for "show" view middleware (see periodicjs.core.protocols for more details)
+	 * @return {Function}         "show" view middeware
+	 */
 	let fn = function controller_show (options = {}) {
 		return this.protocol.api.initialize.SHOW(options);
 	};
@@ -19,6 +29,11 @@ var _controller_show = function (options = {}) {
 };
 
 var _controller_new = function (options = {}) {
+	/**
+	 * Creates a middleware function that will render and "new" view given a configuration. Alias for CoreController.protocol.api.initialize.NEW or CoreController.meta.initialize_new
+	 * @param  {Object}   options Configurable options for "new" view middleware (see periodicjs.core.protocols for more details)
+	 * @return {Function}         "new" view middeware
+	 */
 	let fn = function controller_new (options = {}) {
 		return this.protocol.api.initialize.NEW(options);
 	};
@@ -27,6 +42,11 @@ var _controller_new = function (options = {}) {
 };
 
 var _controller_index = function (options = {}) {
+	/**
+	 * Creates a middleware function that will render and "index" view given a configuration. Alias for CoreController.protocol.api.initialize.INDEX or CoreController.meta.initialize_index
+	 * @param  {Object}   options Configurable options for "index" view middleware (see periodicjs.core.protocols for more details)
+	 * @return {Function}         "index" view middeware
+	 */
 	let fn = function controller_index (options = {}) {
 		return this.protocol.api.initialize.INDEX(options);
 	};
@@ -35,6 +55,11 @@ var _controller_index = function (options = {}) {
 };
 
 var _controller_search_index = function (options = {}) {
+	/**
+	 * Creates a middleware function that will query for data and either render a view or send json content dependent of req options
+	 * @param  {Object}   options Configurable options for "search" middleware (see periodicjs.core.protocols for more details)
+	 * @return {Function}         "search" data middleware
+	 */
 	let fn = function controller_search_index (options = {}) {
 		return this.protocol.api.initialize.SEARCH(options);
 	};
@@ -43,6 +68,11 @@ var _controller_search_index = function (options = {}) {
 };
 
 var _controller_create = function (options = {}) {
+	/**
+	 * Creates a create document middleware function that will take req.body data and create a document in database
+	 * @param  {Object}   options Configurable options for "create" middleware (see periodicjs.core.protocols for more details)
+	 * @return {Function}         "create" data middleware
+	 */
 	let fn = function controller_create (options = {}) {
 		return this.protocol.api.initialize.CREATE(options);
 	};
@@ -51,6 +81,11 @@ var _controller_create = function (options = {}) {
 };
 
 var _controller_cli = function (options = {}) {
+	/**
+	 * Creates a query method that is meant to be usable through the CLI
+	 * @param  {Object}   options Configurable options for "cli" method (see periodicjs.core.protocols for more details)
+	 * @return {Function}         "cli" method
+	 */
 	let fn = function controller_cli (options = {}) {
 		return this.protocol.api.initialize.CLI(options);
 	};
@@ -59,6 +94,11 @@ var _controller_cli = function (options = {}) {
 };
 
 var _controller_update = function (options = {}) {
+	/**
+	 * Creates a update document middleware function that will take req.body data and update a document in database
+	 * @param  {Object}   options Configurable options for "update" middleware (see periodicjs.core.protocols for more details)
+	 * @return {Function}         "update" data middleware
+	 */
 	let fn = function controller_update (options = {}) {
 		return this.protocol.api.initialize.UPDATE(options);
 	};
@@ -67,6 +107,11 @@ var _controller_update = function (options = {}) {
 };
 
 var _controller_remove = function (options = {}) {
+	/**
+	 * Creates a remove document middleware function that will take req.body data and remove a document in database
+	 * @param  {Object}   options Configurable options for "remove" middleware (see periodicjs.core.protocols for more details)
+	 * @return {Function}         "remove" data middleware
+	 */
 	let fn = function controller_remove (options = {}) {
 		return this.protocol.api.initialize.REMOVE(options);
 	};
@@ -75,6 +120,12 @@ var _controller_remove = function (options = {}) {
 };
 
 var _controller_load_model = function (options = {}) {
+	/**
+	 * Creates a load document middleware function that will take req.body data and load a document in database
+	 * @param  {Object}   options Configurable options for "load" middleware (see periodicjs.core.protocols for more details)
+	 * @param {string} options.load_model_population Population settings for load method
+	 * @return {Function}         "load" data middleware
+	 */
 	let fn = function controller_load (options = {}) {
 		options.population = ((options.population) ? options.population : options.load_model_population) || '';
 		return this.protocol.api.initialize.LOAD(options);
@@ -84,6 +135,12 @@ var _controller_load_model = function (options = {}) {
 };
 
 var _controller_load_model_with_population = function (options = {}) {
+	/**
+	 * Creates a load document middleware function that will take req.body data and load a document in database
+	 * @param  {Object}   options Configurable options for "load" middleware (see periodicjs.core.protocols for more details)
+	 * @param {string} options.load_multiple_model_population Population settings for load method
+	 * @return {Function}         "load" data middleware
+	 */
 	let fn = function controller_load (options = {}) {
 		options.population = ((options.population) ? options.population : options.load_multiple_model_population) || '';
 		return this.protocol.api.initialize.LOAD(options);
@@ -93,6 +150,12 @@ var _controller_load_model_with_population = function (options = {}) {
 };
 
 var _controller_model_query = function (options = {}) {
+	/**
+	 * Creates a query document middleware that will return data or paginated data dependent on configuration
+	 * @param  {Object}   options Configurable options for "query" middleware (see periodicjs.core.protocols for more details)
+	 * @param {string} options.load_multiple_model_population Population settings for load method
+	 * @return {Function}         "paginate" data middleware
+	 */
 	let fn = function controller_model_query (options = {}) {
 		options.population = ((options.population) ? options.population : options.load_multiple_model_population) || '';
 		return this.protocol.api.initialize.PAGINATE(options);
@@ -102,6 +165,11 @@ var _controller_model_query = function (options = {}) {
 };
 
 var _controller_load_model_with_count = function (options = {}) {
+	/**
+	 * Sets a default paramter of the request object the specifies that query should return back a paginated set of data
+	 * @param  {Object}   options Configurable options (see periodicjs.core.protocols for more details)
+	 * @return {Function}         load data with count middleware
+	 */
 	let fn = function controller_load_model_with_count (options = {}) {
 		return this.protocol.api.initialize.LOAD_WITH_COUNT(options);
 	};
@@ -110,6 +178,11 @@ var _controller_load_model_with_count = function (options = {}) {
 };
 
 var _controller_load_model_with_default_limit = function (options = {}) {
+	/**
+	 * Sets a default paramter of the request object the specifies that query should have default limit
+	 * @param  {Object}   options Configurable options (see periodicjs.core.protocols for more details)
+	 * @return {Function}         load data with limit middleware
+	 */
 	let fn = function controller_load_model_with_default_limit (options = {}) {
 		return this.protocol.api.initialize.LOAD_WITH_LIMIT(options);
 	};
@@ -118,6 +191,11 @@ var _controller_load_model_with_default_limit = function (options = {}) {
 };
 
 var _controller_routes = function (options = {}) {
+	/**
+	 * Configures a set of routes following api specifications
+	 * @param  {Object}   options Configurable options (see periodicjs.core.protocols for more details)
+	 * @return {Function}         A function that will implement an API strategy for routes
+	 */
 	let fn = function controller_routes (options = {}) {
 		return this.protocol.api.implement(options);
 	};
