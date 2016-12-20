@@ -50,11 +50,14 @@ var _respondInKind = function () {
 		opts.callback = (typeof opts.callback === 'function') ? opts.callback : callback;
 		if ((path.extname(req.originalUrl) === '.html' || req.is('html') || req.is('text/html') || path.extname(req.originalUrl) === '.htm') || typeof opts.callback === 'function') {
 			return this.protocol.respond(req, res, { data: responseData, err, return_response_data: true })
-				.then(result => opts.callback(req, res, result))
+				.try(result => opts.callback(req, res, result))
 				.catch(e => this.protocol.error(req, res, { err: e }));
 		}
-		else if (req.redirecturl) return this.protocol.redirect(req, res);
-		else return this.protocol.respond(req, res, { data: responseData });
+		else if (req.redirecturl) {
+			req.redirectpath = (!req.redirectpath && req.redirecturl) ? req.redirecturl : req.redirectpath;
+			return this.protocol.redirect(req, res);
+		}
+		else return this.protocol.respond(req, res, { data: responseData, err });
 	};
 	let message = 'CoreController.respondInKind: Use CoreController.protocol.respond with a HTTP adapter instead';
 	return wrapWithDeprecationWarning.call(this, fn, message);
@@ -155,9 +158,9 @@ var _renderView = function () {
 		let themename = this.theme;
 		return this._utility_responder.render(viewdata, { viewname: viewtemplate })
 			.then(result => {
-				this.protocol.respond(req, res, { responder_override: result });
+				return this.protocol.respond(req, res, { responder_override: result });
 			}, err => {
-				this.protocol.respond(req, res, { err });
+				return this.protocol.respond(req, res, { err });
 			});
 	};
 	let message = 'CoreController.renderView: Use CoreController.responder.render with an HTML adapter or CoreController._utility_responder.render instead';
