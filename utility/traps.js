@@ -42,7 +42,7 @@ module.exports = function initialize_traps (parent) {
 		}
 	};
 	let set = function (target, property, value) {
-		if (INACCESSIBLE.indexOf(property) !== -1 || DBOPS.indexOf(property) !== -1 || DIRECT.indexOf(property) !== -1) return false;
+		if (INACCESSIBLE.indexOf(property) !== -1 || DBOPS.indexOf(property) !== -1 || DIRECT.indexOf(property) === -1) return true;
 		parent[property] = value;
 		return true;
 	};
