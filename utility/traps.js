@@ -27,23 +27,21 @@ module.exports = function initialize_traps (parent) {
 				let sources = [];
 				if (!parent.protocol) parent.logger.warn('protocol adapter has not been initialized');
 				else sources.push(parent.protocol);
-				if (!parent.db) parent.logger.warn('db adapter has not been initialized');
+				if (!parent.db || (parent.db && Object.keys(parent.db).length === 0)) parent.logger.warn('db adapter has not been initialized');
+				else sources.push(parent.db.default);
 				if(!parent.responder) parent.logger.warn('response adapter has not been initialized');
 				else sources.push(parent.responder);
 				sources.push(parent);
 				for (let i = 0, len = sources.length; i < len; i++) {
 					if (sources[i][property]) return (typeof sources[i][property] === 'function') ? sources[i][property].bind(sources[i]) : sources[i][property];
 				}
-				if (parent.db && parent.db === 'object') {
-					if (parent.db.default[property]) return (typeof parent.db.default[property] === 'function') ? parent.db.default[property].bind(parent.db.default) : parent.db.default[property];
-				}
 			}
 			return undefined;
 		}
 	};
 	let set = function (target, property, value) {
-		if (INACCESSIBLE.indexOf(property) !== -1 || DBOPS.indexOf(property) !== -1 || DIRECT.indexOf(property) === -1) return true;
-		parent[property] = value;
+		if (INACCESSIBLE.indexOf(property) !== -1 || DBOPS.indexOf(property) !== -1 || DIRECT.indexOf(property) !== -1) return true;
+		target[property] = value;
 		return true;
 	};
 	return { get, set };

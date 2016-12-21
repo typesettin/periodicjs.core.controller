@@ -219,6 +219,76 @@ describe('Aliased Protocol Methods', function () {
 			});
 		});
 	});
+	describe('handleDocumentQueryErrorResponse', function () {
+		let originalRender;
+		let originalError;
+		let originalRespond;
+		let originalRedirect;
+		let originalWarning;
+		let reqFactory = function (originalUrl, redirecturl) {
+			let req = { originalUrl, redirecturl, headers: {}, connection: {}, query: {}, params: {} };
+			let res = {
+				status: chai.spy((num) => res),
+				jsonp: chai.spy((data) => data),
+				send: chai.spy((data) => data),
+				redirect: chai.spy((endpoint) => endpoint),
+				render: chai.spy((viewpath) => viewpath)
+			};
+			req.is = (val) => (req.headers && req.headers['Content-Type'] && req.headers['Content-Type'] === val);
+			return { req, res };
+		};
+		before(() => {
+			originalRender = controller._utility_responder.render.bind(controller._utility_responder);
+			controller._utility_responder.render = chai.spy(originalRender);
+			originalError = controller.protocol.error.bind(controller.protocol);
+			originalWarning = controller.protocol.warn.bind(controller.protocol);
+			originalRespond = controller.protocol.respond.bind(controller.protocol);
+			originalRedirect = controller.protocol.redirect.bind(controller.protocol);
+			controller.protocol.error = chai.spy(originalError);
+			controller.protocol.respond = chai.spy(originalRespond);
+			controller.protocol.redirect = chai.spy(originalRedirect);
+			controller.protocol.warn = chai.spy(originalWarning);
+		});
+		after(() => {
+			controller._utility_responder.render = originalRender;
+			controller.protocol.error = originalError;
+			controller.protocol.respond = originalRespond;
+			controller.protocol.redirect = originalRedirect;
+			controller.protocol.warn = originalWarning;
+		});
+		it('Should be a function', () => {
+			expect(controller.handleDocumentQueryErrorResponse).to.be.a('function');
+		});
+		it('Should call redirect if req.redirecturl is defined and request does have a html content-type', done => {
+			let { req, res } = reqFactory('periodicjs.com', 'periodicjs.net/member/account');
+			let redirect = controller.handleDocumentQueryErrorResponse({ req, res, err: new Error('Test Error') });
+			expect(controller.protocol.redirect).to.have.been.called.with(req);
+			expect(res.redirect).to.have.been.called.with('periodicjs.net/member/account');
+			expect(controller.protocol.error).to.have.been.called();
+			done();
+		});
+		it('Should use warning if use_warning is true', done => {
+			let { req, res } = reqFactory('periodicjs.com', 'periodicjs.net/member/account');
+			let redirect = controller.handleDocumentQueryErrorResponse({ req, res, err: new Error('Test Error'), use_warning: true });
+			expect(controller.protocol.redirect).to.have.been.called.with(req);
+			expect(res.redirect).to.have.been.called.with('periodicjs.net/member/account');
+			expect(controller.protocol.warn).to.have.been.called();
+			done();
+		});
+		it('Should call the callback if it is passed as second argument', done => {
+			let { req, res } = reqFactory('periodicjs.com');
+			controller.handleDocumentQueryErrorResponse({ req, res, err: new Error('Test Error') }, (err, result) => {
+				if (err) done(err);
+				else {
+					expect(result).to.have.property('result');
+					expect(result.result).to.equal('error');
+					expect(result).to.have.property('data');
+					expect(result.data.error.message).to.equal('Test Error');
+					done();
+				}
+			});
+		});
+	});
 	describe('renderView', function () {
 		let originalRender;
 		let originalError;

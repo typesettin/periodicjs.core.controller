@@ -6,8 +6,9 @@ const expect = chai.expect;
 
 describe('initialize_traps.js', function () {
 	let proxy;
+	let obj = {};
 	before(() => {
-		proxy = new Proxy({}, initialize_traps({
+		proxy = new Proxy(obj, initialize_traps({
 			db: {
 				default: {
 					query: () => 'query'
@@ -36,6 +37,10 @@ describe('initialize_traps.js', function () {
 	it('Should not allow for property assignments on inaccessible properties', () => {
 		proxy.protocol = true;
 		expect(proxy.protocol).to.not.equal(true);
+	});
+	it('Should allow for property assignments if not specified as inaccessible', () => {
+		proxy.hello = 'world';
+		expect(obj.hello).to.equal('world');
 	});
 	it('Should access properties directly if it is a direct path', () => {
 		let protocol = proxy.protocol;
@@ -69,5 +74,9 @@ describe('initialize_traps.js', function () {
 		let method = proxy.somemethod;
 		expect(method).to.be.a('function');
 		expect(method()).to.equal('somemethod');
+	});
+	it('Should return undefined if method is not found', () => {
+		let method = proxy.fakemethod;
+		expect(method).to.equal(undefined);
 	});
 });

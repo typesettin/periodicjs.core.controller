@@ -128,7 +128,10 @@ var _handleDocumentQueryErrorResponse = function () {
 				.then(result => callback(null, result))
 				.catch(callback);
 		}
-		else if (req.redirecturl) this.protocol.redirect(req, res);
+		else if (req.redirecturl) {
+			req.redirectpath = (!req.redirectpath && req.redirecturl) ? req.redirecturl : req.redirectpath;
+			return this.protocol.redirect(req, res);
+		}
 		else {
 			return this._utility_responder.error(err, {})
 				.then(result => {
