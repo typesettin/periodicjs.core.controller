@@ -193,15 +193,15 @@ var core_controller = new CoreController(resource, {
  */
 //There are four main points of access when using the meta property:
 //1. Accessing nested methods
-core_controller.meta.render -> Child protocol adapters are searched for the .render method and if it is found a bound copy of the function is returned
+core_controller.meta.render //-> Child protocol adapters are searched for the .render method and if it is found a bound copy of the function is returned
 //2. Accessing controller implementation functions
-core_controller.meta.initialize_index -> If the property follows the syntax "initialize" + "_" + keyword representing controller implementation ie. new, index, edit a bound copy of the api adapter utility method will be returned
+core_controller.meta.initialize_index //-> If the property follows the syntax "initialize" + "_" + keyword representing controller implementation ie. new, index, edit a bound copy of the api adapter utility method will be returned
 core_controlle.meta.initialize = {} //All API utility methods indexed by method name
 //3. Accessing CRUD methods
-core_controller.meta.load -> searches the controller.db.default object for a .load method and returns it
-core_controller.meta.loadUser -> If the "user" model adapter has been loaded sudo-aliased methods are available ie. loadUser, createUser, updateUser
+core_controller.meta.load //-> searches the controller.db.default object for a .load method and returns it
+core_controller.meta.loadUser //-> If the "user" model adapter has been loaded sudo-aliased methods are available ie. loadUser, createUser, updateUser
 //4. Direct Access
-core_controller.meta.protocol = core_controller.protocol -> Any properties that exist on core_controller are also accessible from the meta property
+core_controller.meta.protocol = core_controller.protocol //-> Any properties that exist on core_controller are also accessible from the meta property
 
 ```
 ### Development
