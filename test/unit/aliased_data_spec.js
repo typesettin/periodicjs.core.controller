@@ -43,7 +43,8 @@ describe('Aliased Data Methods', function () {
 						model_name: 'example',
 						adapter: 'mongo',
 						model: 'Example'
-					}]
+					}],
+					compatibility: false
 				});
 				done();
 			}, done);

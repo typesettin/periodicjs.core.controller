@@ -25,9 +25,10 @@ describe('Aliased Logger Methods', function () {
 				theme: 'periodicjs.theme.default',
 				application: {
 					environment: 'test'
-				}
+				},
+				compatibility: false
 			},
-			logger: console
+			logger: console,
 		});
 	});
 	after(() => {

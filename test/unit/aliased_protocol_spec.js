@@ -16,7 +16,8 @@ describe('Aliased Protocol Methods', function () {
 				theme: 'periodicjs.theme.default',
 				application: {
 					environment: 'test'
-				}
+				},
+				compatibility: false
 			},
 			logger: console
 		});

@@ -51,7 +51,8 @@ describe('CoreController Integration', function () {
 				}, {
 					skip_responder: true,
 					skip_db: true,
-					skip_protocol: true
+					skip_protocol: true,
+					compatibility: false
 				});
 				done();
 			}, done);
@@ -60,6 +61,7 @@ describe('CoreController Integration', function () {
 		expect(controller.responder).to.not.be.ok;
 		expect(controller.db).to.deep.equal({});
 		expect(controller.protocol).to.not.be.ok;
+		expect(controller.compatibility).to.not.be.ok;
 	});
 	it('Should have meta and _utility_responder properties', () => {
 		expect(controller._utility_responder).to.be.ok;
