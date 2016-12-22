@@ -7,3 +7,4 @@
 const path = require('path');
 
 module.exports = require(path.join(__dirname, './lib/index'));
+module.exports.compatibility = require(path.join(__dirname, './archive/controller'));

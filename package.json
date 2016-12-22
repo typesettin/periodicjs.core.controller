@@ -19,13 +19,20 @@
   ],
   "dependencies": {
     "capitalize": "^1.0.0",
+    "objectcompare": "^0.2.0",
     "periodicjs.core.data": "~0.0.9",
-    "periodicjs.core.protocols": "~0.1.1",
-    "periodicjs.core.responder": "~0.0.8",
-    "pluralize": "~1.1.2"
+    "periodicjs.core.protocols": "~0.2.0",
+    "periodicjs.core.responder": "~0.2.0",
+    "pluralize": "^1.1.6",
+    "string-to-json": "^0.1.0",
+    "valid-objectid": "0.0.2",
+    "xss": "^0.3.3"
   },
   "description": "Customizable CMS platform",
   "devDependencies": {
+    "async": "^2.1.4",
+    "bcrypt": "^1.0.1",
+    "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "chai": "^3.0.0",
     "chai-spies": "^0.7.1",
@@ -48,8 +55,10 @@
     "mocha-lcov-reporter": "^1.2.0",
     "moment": "^2.13.0",
     "mongoose": "~4.4.14",
+    "periodicjs.core.mailer": "^6.0.0",
     "periodicjs.core.utilities": "^6.1.1",
-    "promisie": "^1.5.3"
+    "promisie": "^1.5.3",
+    "utils-merge": "^1.0.0"
   },
   "directories": {},
   "dist": {

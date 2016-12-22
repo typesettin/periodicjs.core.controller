@@ -120,30 +120,45 @@ describe('Aliased Protocol Methods', function () {
 		it('Should call the callback function if options is passed', done => {
 			let { req, res } = reqFactory('periodicjs.com');
 			let callback = function (_req, _res, result) {
-				expect(result).to.have.property('result');
-				expect(result).to.have.property('data');
-				expect(result.data).to.have.property('hello');
-				done();
+				try {
+					expect(result).to.have.property('result');
+					expect(result).to.have.property('data');
+					expect(result.data).to.have.property('hello');
+					done();
+				}
+				catch (e) {
+					done(e);
+				}
 			};
 			controller.respondInKind({ req, res, responseData: { hello: 'world' }, callback });
 		});
 		it('Should call the callback if it is passed as second argument', done => {
 			let { req, res } = reqFactory('periodicjs.com');
 			controller.respondInKind({ req, res, responseData: { hello: 'world' } }, (_req, _res, result) => {
-				expect(result).to.have.property('result');
-				expect(result).to.have.property('data');
-				expect(result.data).to.have.property('hello');
-				done();
+				try {
+					expect(result).to.have.property('result');
+					expect(result).to.have.property('data');
+					expect(result.data).to.have.property('hello');
+					done();
+				}
+				catch (e) {
+					done(e);
+				}
 			});
 		});
 		it('Should call the callback if request is html content-type', done => {
 			let { req, res } = reqFactory('periodicjs.com');
 			req.headers['Content-Type'] = 'html';
 			let callback = function (_req, _res, result ) {
-				expect(result).to.have.property('result');
-				expect(result).to.have.property('data');
-				expect(result.data).to.have.property('hello');
-				done();
+				try {
+					expect(result).to.have.property('result');
+					expect(result).to.have.property('data');
+					expect(result.data).to.have.property('hello');
+					done();
+				}
+				catch (e) {
+					done(e);
+				}
 			};
 			controller.respondInKind({ req, res, responseData: { hello: 'world' }, callback });
 		});
@@ -159,7 +174,10 @@ describe('Aliased Protocol Methods', function () {
 				status: chai.spy((num) => res),
 				jsonp: chai.spy((data) => data),
 				send: chai.spy((data) => data),
-				redirect: chai.spy((endpoint) => endpoint)
+				redirect: chai.spy((endpoint) => endpoint),
+				render: chai.spy((fp, data, cb) => {
+					cb(null, data);
+				})
 			};
 			req.is = (val) => (req.headers && req.headers['Content-Type'] && req.headers['Content-Type'] === val);
 			return { req, res };
@@ -197,7 +215,6 @@ describe('Aliased Protocol Methods', function () {
 			})
 				.try(result => {
 					expect(controller.protocol.respond).to.have.been.called.with({ responder_override: result });
-					expect(result).to.equal('Hello World');
 					done();
 				})
 				.catch(done);
@@ -213,7 +230,6 @@ describe('Aliased Protocol Methods', function () {
 				if (err) done(err);
 				else {
 					expect(controller.protocol.respond).to.have.been.called.with({ responder_override: result });
-					expect(result).to.equal('Hello World');
 					done();
 				}
 			});
@@ -232,7 +248,9 @@ describe('Aliased Protocol Methods', function () {
 				jsonp: chai.spy((data) => data),
 				send: chai.spy((data) => data),
 				redirect: chai.spy((endpoint) => endpoint),
-				render: chai.spy((viewpath) => viewpath)
+				render: chai.spy((fp, data, cb) => {
+					cb(null, data);
+				})
 			};
 			req.is = (val) => (req.headers && req.headers['Content-Type'] && req.headers['Content-Type'] === val);
 			return { req, res };

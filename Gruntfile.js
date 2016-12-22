@@ -21,6 +21,7 @@ module.exports = function (grunt) {
         options: {
           coverageFolder: 'coverage', // will check both coverage folders and merge the coverage results
           coverage:true, // this will make the grunt.event.on('coverage') event listener to be triggered
+          excludes: ['**/archive/**'],
           check: {
             lines: 5,
             branches: 5,

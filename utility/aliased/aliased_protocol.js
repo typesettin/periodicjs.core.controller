@@ -2,6 +2,7 @@
 const path = require('path');
 const pluralize = require('pluralize');
 const capitalize = require('capitalize');
+const Promisie = require('promisie');
 const wrapWithDeprecationWarning = require(path.join(__dirname, '../deprecate'));
 
 /**
@@ -50,14 +51,25 @@ var _respondInKind = function () {
 		opts.callback = (typeof opts.callback === 'function') ? opts.callback : callback;
 		if ((path.extname(req.originalUrl) === '.html' || req.is('html') || req.is('text/html') || path.extname(req.originalUrl) === '.htm') || typeof opts.callback === 'function') {
 			return this.protocol.respond(req, res, { data: responseData, err, return_response_data: true })
-				.try(result => opts.callback(req, res, result))
-				.catch(e => this.protocol.error(req, res, { err: e }));
+				.try(result => {
+					if (typeof opts.callback === 'function') opts.callback(req, res, result);
+					else return Promisie.resolve(result);
+				})
+				.catch(e => {
+					if (typeof opts.callback === 'function') callback(e);
+					else return Promisie.reject(e);
+				});
 		}
 		else if (req.redirecturl) {
 			req.redirectpath = (!req.redirectpath && req.redirecturl) ? req.redirecturl : req.redirectpath;
 			return this.protocol.redirect(req, res);
 		}
-		else return this.protocol.respond(req, res, { data: responseData, err });
+		else {
+			let settings = (this.protocol && this.protocol.settings) ? this.protocol.settings : false;
+			if (settings && settings.sessions && settings.sessions.enabled && req.session) req.flash = req.flash.bind(req);
+			else req.flash = null;
+			return this.protocol.respond(req, res, { data: responseData, err });
+		}
 	};
 	let message = 'CoreController.respondInKind: Use CoreController.protocol.respond with a HTTP adapter instead';
 	return wrapWithDeprecationWarning.call(this, fn, message);
@@ -81,21 +93,21 @@ var _handleDocumentQueryRender = function () {
 	 * @return {Function}          If callback is not defined returns a Promise which resolves with rendered template
 	 */
 	let fn = function handleDocumentQueryRender (opts = {}, callback) {
-		let { extname, viewname, themefileext, viewfileext } = opts;
+		let { extname, viewname, themefileext, viewfileext, responseData } = opts;
 		let themename = this.theme;
 		let fileext = (typeof themefileext === 'string') ? themefileext : viewfileext;
-		return this._utility_responder.render({}, Object.assign(opts, { themename, fileext }))
+		return this._utility_responder.render(responseData || {}, Object.assign(opts, { themename, fileext, skip_response: true }))
 			.then(result => {
 				this.protocol.respond(opts.req, opts.res, {
 					responder_override: result
 				});
 				if (typeof callback === 'function') callback(null, result);
-				else return result;
+				else return Promisie.resolve(result);
 			})
 			.catch(e => {
 				this.protocol.error(opts.req, opts.res, { err: e });
 				if (typeof callback === 'function') callback(e);
-				else return Promise.reject(e);
+				else return Promisie.reject(e);
 			});
 	};
 	let message = 'CoreController.handleDocumentQueryRender: Use CoreController.responder.render with an HTML adapter or CoreController._utility_responder.render instead';
