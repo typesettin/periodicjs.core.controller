@@ -83,8 +83,10 @@ Contructs a new Core instance
 | resources | <code>Object</code> | Periodicjs shared resources |
 | resources.logger | <code>Object</code> | A logger module that should be used in logging errors, info and warns |
 | resources.settings | <code>Object</code> | Contains various application settings including theme and environment specific configurations |
+| resources.settings.compatibility | <code>Boolean</code> | If strictly false compatibility mode CoreController will not be initialized and all alias methods will reference their v10 counterparts |
 | resources.app | <code>Object</code> | Should contain a locals property that has local data to be shared with constructed object |
 | options | <code>Object</code> | Configurable options for adapters and overrides |
+| options.compatibility | <code>Boolean</code> | If strictly false compatibility mode CoreController will not be initialized and all alias methods will reference their v10 counterparts |
 
 <a name="CORE+initialize_responder"></a>
 
