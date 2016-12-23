@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utility/aliased/aliased_data.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utility/aliased/aliased_data.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+const path = require('path');
+const wrapWithDeprecationWarning = require(path.join(__dirname, '../deprecate'));
+
+/**
+ * Creates a function that takes configurable options and queries the database for a single document. Alias for CoreController.db.default.load or CoreController.meta.load
+ * @return {Fuction} A function that queries the database for a single document
+ */
+var _loadModel = function () {
+	/**
+	 * Loads a single document from the database
+	 * @param  {Object}   options Configurable options for load (see periodicjs.core.data for more details)
+	 * @param  {Function} cb      Callback function
+	 * @return {Object}         Returns a Promise which resolves with document if cb arugment is not passed
+	 */
+	let fn = function loadModel (options = {}, cb) {
+		return this.db.default.load(options, cb);
+	}
+	let message = 'CoreController.loadModel: Use CoreController.db.default.load, CoreController.db[model_name].load, CoreController.meta.load or CoreController.meta.load[model_name] instead';
+	return wrapWithDeprecationWarning.call(this, fn, message);
+};
+
+/**
+ * Creates a function that takes configurable options and queries the database for multiple documents. Alias for CoreController.db.default.search or CoreController.meta.search
+ * @return {Fuction} A function that queries the database for multiple documents
+ */
+var _searchModel = function () {
+	/**
+	 * Queries the database for multiple documents
+	 * @param  {Object}   options Configurable options for search (see periodicjs.core.data for more details)
+	 * @param  {Function} cb      Callback function
+	 * @return {Object}         Returns a Promise which resolves with documents if cb arugment is not passed
+	 */
+	let fn = function searchModel (options = {}, cb) {
+		return this.db.default.search(options, cb);
+	}
+	let message = 'CoreController.searchModel: Use CoreController.db.default.search, CoreController.db[model_name].search, CoreController.meta.search or CoreController.meta.search[model_name] instead';
+	return wrapWithDeprecationWarning.call(this, fn, message);
+};
+
+/**
+ * Creates a function that takes configurable options and creates a document. Alias for CoreController.db.default.create or CoreController.meta.create
+ * @return {Fuction} A function that creates a document
+ */
+var _createModel = function () {
+	/**
+	 * Creates a document in the database
+	 * @param  {Object}   options Configurable options for create (see periodicjs.core.data for more details)
+	 * @param  {Function} cb      Callback function
+	 * @return {Object}         Returns a Promise which resolves with created document if cb arugment is not passed
+	 */
+	let fn = function createModel (options = {}, cb) {
+		return this.db.default.create(options, cb);
+	}
+	let message = 'CoreController.createModel: Use CoreController.db.default.create, CoreController.db[model_name].create, CoreController.meta.create or CoreController.meta.create[model_name] instead';
+	return wrapWithDeprecationWarning.call(this, fn, message);
+};
+
+/**
+ * Creates a function that takes configurable options and updates a document. Alias for CoreController.db.default.update or CoreController.meta.update
+ * @return {Fuction} A function that updates a document
+ */
+var _updateModel = function () {
+	/**
+	 * Updates a document in the database
+	 * @param  {Object}   options Configurable options for update (see periodicjs.core.data for more details)
+	 * @param  {Function} cb      Callback function
+	 * @return {Object}         Returns a Promise which resolves with the update status if cb argument is not passed
+	 */
+	let fn = function updateModel (options = {}, cb) {
+		return this.db.default.update(options, cb);
+	}
+	let message = 'CoreController.updateModel: Use CoreController.db.default.update, CoreController.db[model_name].update, CoreController.meta.update or CoreController.meta.update[model_name] instead';
+	return wrapWithDeprecationWarning.call(this, fn, message);
+};
+
+/**
+ * Creates a function that takes configurable options and deletes a document. Alias for CoreController.db.default.delete or CoreController.meta.delete
+ * @return {Fuction} A function that deletes a document
+ */
+var _deleteModel = function () {
+	/**
+	 * Deletes a document in the database
+	 * @param  {Object}   options Configurable options for delete (see periodicjs.core.data for more details)
+	 * @param  {Function} cb      Callback function
+	 * @return {Object}         Returns a Promise which resolves with the delete status if cb argument is not passed
+	 */
+	let fn = function deleteModel (options = {}, cb) {
+		return this.db.default.delete(options, cb);
+	}
+	let message = 'CoreController.deleteModel: Use CoreController.db.default.delete, CoreController.db[model_name].delete, CoreController.meta.delete or CoreController.meta.delete[model_name] instead';
+	return wrapWithDeprecationWarning.call(this, fn, message);
+};
+
+module.exports = {
+	loadModel: _loadModel,
+	searchModel: _searchModel,
+	createModel: _createModel,
+	updateModel: _updateModel,
+	deleteModel: _deleteModel
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CORE.html">CORE</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_createModel">_createModel</a></li><li><a href="global.html#_deleteModel">_deleteModel</a></li><li><a href="global.html#_getPluginViewDefaultTemplate">_getPluginViewDefaultTemplate</a></li><li><a href="global.html#_getViewModelProperties">_getViewModelProperties</a></li><li><a href="global.html#_handleDocumentQueryErrorResponse">_handleDocumentQueryErrorResponse</a></li><li><a href="global.html#_handleDocumentQueryRender">_handleDocumentQueryRender</a></li><li><a href="global.html#_INITIALIZE_ALIASED_UTILITIES">_INITIALIZE_ALIASED_UTILITIES</a></li><li><a href="global.html#_INITIALIZE_UTILITY_RESPONDER">_INITIALIZE_UTILITY_RESPONDER</a></li><li><a href="global.html#_loadModel">_loadModel</a></li><li><a href="global.html#_logError">_logError</a></li><li><a href="global.html#_logWarning">_logWarning</a></li><li><a href="global.html#_renderView">_renderView</a></li><li><a href="global.html#_respondInKind">_respondInKind</a></li><li><a href="global.html#_searchModel">_searchModel</a></li><li><a href="global.html#_STARTUP">_STARTUP</a></li><li><a href="global.html#_updateModel">_updateModel</a></li><li><a href="global.html#save_revision">save_revision</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Dec 23 2016 13:59:15 GMT-0500 (EST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

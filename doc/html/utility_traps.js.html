@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utility/traps.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utility/traps.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+const DIRECT = ['protocol', 'db', 'responder', 'initialize_responder', 'initialize_protocol', 'initialize_db'];
+const INACCESSIBLE = ['protocol', 'db', 'responder'];
+const DBOPS = ['query', 'search', 'stream', 'load', 'update', 'create', 'delete'];
+
+/**
+ * Creates a get and set trap for a Proxy. Get trap looks through child adapters to find methods nested within parent CoreController instance
+ * @param  {Object} parent A parent CoreController instance
+ * @return {Object}        Returns an object with "get" and "set" keys which represent get and set traps for a Proxy
+ */
+module.exports = function initialize_traps (parent) {
+	let get = function (target, property) {
+		if (DIRECT.indexOf(property) !== -1) return (typeof parent[property] === 'function') ? parent[property].bind(parent) : parent[property];
+		else if (DBOPS.indexOf(property) !== -1) return parent.db.default[property].bind(parent.db.default);
+		else if (property === 'initialize') return parent.protocol.api.initialize;
+		//sudo-aliasing of api implementation methods following a specific pattern. Call by getting a property that beings with the keyword "initialize_" and is followed by a method name ie. edit, show, new, index, search, create, cli, update, remove, load, load_with_count, load_with_limit, paginate, routes
+		else if (/^initialize_(edit|show|new|index|search|create|cli|update|remove|load|load_with_count|load_with_limit|paginate|routes)$/i.test(property)) {
+			let value = property.replace(/^initialize_(.+)$/, '$1').toUpperCase();
+			if (value === 'ROUTES') return parent.protocol.api.implement.bind(parent.protocol.api);
+			return parent.protocol.api.initialize[value];
+		}
+		else {
+			//sudo-aliasing of model specific CRUD methods (model adapter must already by initialized). Call by getting property that beings with method keyword ie. query, search, stream, load, update, create, delete and end with the name of the model with the first letter capitalized
+			let [dbMethod, dbModel] = property.replace(/^(query|search|stream|load|update|create|delete){1}(\w+)$/, '$1,$2').toLowerCase().split(',');
+			if (typeof dbModel === 'string' &amp;&amp; dbModel.length &amp;&amp; typeof dbMethod === 'string' &amp;&amp; DBOPS.indexOf(dbMethod) !== -1) {
+				if (parent.db[dbModel]) return parent.db[dbModel][dbMethod].bind(parent.db[dbModel]);
+			}
+			else {
+				let sources = [];
+				if (!parent.protocol) parent.logger.warn('protocol adapter has not been initialized');
+				else sources.push(parent.protocol);
+				if (!parent.db || (parent.db &amp;&amp; Object.keys(parent.db).length === 0)) parent.logger.warn('db adapter has not been initialized');
+				else sources.push(parent.db.default);
+				if(!parent.responder) parent.logger.warn('response adapter has not been initialized');
+				else sources.push(parent.responder);
+				sources.push(parent);
+				for (let i = 0, len = sources.length; i &lt; len; i++) {
+					if (sources[i][property]) return (typeof sources[i][property] === 'function') ? sources[i][property].bind(sources[i]) : sources[i][property];
+				}
+			}
+			return undefined;
+		}
+	};
+	let set = function (target, property, value) {
+		if (INACCESSIBLE.indexOf(property) !== -1 || DBOPS.indexOf(property) !== -1 || DIRECT.indexOf(property) !== -1) return true;
+		target[property] = value;
+		return true;
+	};
+	return { get, set };
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CORE.html">CORE</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_createModel">_createModel</a></li><li><a href="global.html#_deleteModel">_deleteModel</a></li><li><a href="global.html#_getPluginViewDefaultTemplate">_getPluginViewDefaultTemplate</a></li><li><a href="global.html#_getViewModelProperties">_getViewModelProperties</a></li><li><a href="global.html#_handleDocumentQueryErrorResponse">_handleDocumentQueryErrorResponse</a></li><li><a href="global.html#_handleDocumentQueryRender">_handleDocumentQueryRender</a></li><li><a href="global.html#_INITIALIZE_ALIASED_UTILITIES">_INITIALIZE_ALIASED_UTILITIES</a></li><li><a href="global.html#_INITIALIZE_UTILITY_RESPONDER">_INITIALIZE_UTILITY_RESPONDER</a></li><li><a href="global.html#_loadModel">_loadModel</a></li><li><a href="global.html#_logError">_logError</a></li><li><a href="global.html#_logWarning">_logWarning</a></li><li><a href="global.html#_renderView">_renderView</a></li><li><a href="global.html#_respondInKind">_respondInKind</a></li><li><a href="global.html#_searchModel">_searchModel</a></li><li><a href="global.html#_STARTUP">_STARTUP</a></li><li><a href="global.html#_updateModel">_updateModel</a></li><li><a href="global.html#save_revision">save_revision</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Dec 23 2016 13:59:15 GMT-0500 (EST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
