@@ -24,6 +24,7 @@
     "periodicjs.core.protocols": "~0.2.0",
     "periodicjs.core.responder": "~0.2.0",
     "pluralize": "^1.1.6",
+    "sequelize": "^3.29.0",
     "string-to-json": "^0.1.0",
     "valid-objectid": "0.0.2",
     "xss": "^0.3.3"
@@ -105,6 +106,6 @@
   "scripts": {
     "test": "mocha -R spec --recursive"
   },
-  "version": "10.0.1",
+  "version": "10.0.2",
   "license": "MIT"
 }
