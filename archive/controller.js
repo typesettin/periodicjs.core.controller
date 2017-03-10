@@ -2940,7 +2940,7 @@ Controller.prototype.controller_model_search_query = function(options) {
           query = {
             $and: [
               {
-                $or: orQuery.filter(or => Object.keys(or).length),
+                $or: (orQuery.length>1) ? orQuery.filter(or => Object.keys(or).length) : orQuery,
               },
             ],
           };
