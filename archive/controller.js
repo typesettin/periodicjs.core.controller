@@ -2079,6 +2079,7 @@ Controller.prototype.controller_update = function(options) {
         saverevision: saverevision,
         originalrevision: req.controllerData[options.model_name],
         population: options.load_model_population,
+        callback: (req.controllerData.updateCallback) ? req.controllerData.updateCallback : undefined,
         res: res,
         req: req,
         successredirect: req.redirectpath || '/p-admin/' + options.model_name + '/edit/',
