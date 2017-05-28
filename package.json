@@ -7,8 +7,7 @@
   "bugs": {
     "url": "https://github.com/typesettin/periodicjs.core.controllerhelper/issues"
   },
-  "contributors": [
-    {
+  "contributors": [{
       "name": "Yaw Joseph Etse",
       "email": "yaw.etse@gmail.com"
     },
@@ -84,8 +83,7 @@
     "wysiwyg"
   ],
   "main": "index.js",
-  "maintainers": [
-    {
+  "maintainers": [{
       "name": "ecasilla",
       "email": "ecasilla@icloud.com"
     },
@@ -107,6 +105,6 @@
   "scripts": {
     "test": "mocha -R spec --recursive"
   },
-  "version": "10.2.1",
+  "version": "10.3.0",
   "license": "MIT"
 }
