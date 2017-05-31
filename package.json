@@ -19,8 +19,8 @@
   "dependencies": {
     "capitalize": "^1.0.0",
     "objectcompare": "^0.2.0",
-    "periodicjs.core.data": "^0.5.2",
-    "periodicjs.core.protocols": "^0.3.3",
+    "periodicjs.core.data": "^0.5.3",
+    "periodicjs.core.protocols": "^0.3.4",
     "periodicjs.core.responder": "~0.2.0",
     "pluralize": "^1.1.6",
     "sequelize": "^3.29.0",
@@ -105,6 +105,6 @@
   "scripts": {
     "test": "mocha -R spec --recursive"
   },
-  "version": "10.3.2",
+  "version": "10.3.3",
   "license": "MIT"
 }
