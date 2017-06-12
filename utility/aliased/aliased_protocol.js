@@ -169,7 +169,7 @@ var _renderView = function () {
 	 * @param  {string}   viewtemplate File path for the view template. By default render will check if file exists in configured default theme and periodicjs extension as well as the viewname as an absolute path
 	 * @param  {Object}   viewdata     Data that should be passed for template render
 	 */
-	let fn = function renderView (req, res, viewtemplate, viewdata) {
+	let fn = function renderView(req, res, viewtemplate, viewdata) {
 		let themename = this.theme;
 		return this._utility_responder.render(viewdata, { viewname: viewtemplate })
 			.then(result => {
@@ -178,8 +178,9 @@ var _renderView = function () {
 				return this.protocol.respond(req, res, { err });
 			});
 	};
-	let message = 'CoreController.renderView: Use CoreController.responder.render with an HTML adapter or CoreController._utility_responder.render instead';
-	return wrapWithDeprecationWarning.call(this, fn, message);
+	return fn;
+	// let message = 'CoreController.renderView: Use CoreController.responder.render with an HTML adapter or CoreController._utility_responder.render instead';
+	// return wrapWithDeprecationWarning.call(this, fn, message);
 };
 
 /**
