@@ -19,7 +19,7 @@
   "dependencies": {
     "capitalize": "^1.0.0",
     "objectcompare": "^0.2.0",
-    "periodicjs.core.data": "^0.6.3",
+    "periodicjs.core.data": "^0.6.4",
     "periodicjs.core.protocols": "^0.5.3",
     "periodicjs.core.responder": "~0.3.3",
     "pluralize": "^1.1.6",
@@ -51,7 +51,7 @@
     "grunt-simple-mocha": "~0.4.0",
     "istanbul": "^0.4.5",
     "jsdoc": "^3.4.3",
-    "lowkie": "^0.3.1",
+    "lowkie": "^1.0.2",
     "mocha": "~2.2.5",
     "mocha-lcov-reporter": "^1.2.0",
     "moment": "^2.13.0",
@@ -105,6 +105,6 @@
   "scripts": {
     "test": "mocha -R spec --recursive"
   },
-  "version": "10.6.4",
+  "version": "10.6.5",
   "license": "MIT"
 }
