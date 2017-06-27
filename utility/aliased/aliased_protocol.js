@@ -1,5 +1,6 @@
 'use strict';
 const path = require('path');
+const querystring = require('querystring');
 const pluralize = require('pluralize');
 const capitalize = require('capitalize');
 const Promisie = require('promisie');
@@ -170,17 +171,76 @@ var _renderView = function () {
    * @param  {Object}   viewdata     Data that should be passed for template render
    */
   let fn = function renderView(req, res, viewtemplate, viewdata) {
+    const viewTemplateData = (typeof viewtemplate === 'string')
+      ? { viewname: viewtemplate }
+      : viewtemplate;
+    return this._utility_responder.render(viewdata, viewTemplateData)
+      .then(result => {
+        return this.protocol.respond(req, res, { responder_override: result });
+      }, err => {
+        return this.protocol.respond(req, res, { err });
+      });
+  };
+  return fn;
+  // let message = 'CoreController.renderView: Use CoreController.responder.render with an HTML adapter or CoreController._utility_responder.render instead';
+  // return wrapWithDeprecationWarning.call(this, fn, message);
+};
+
+function getRespondInKindData(resOptions) {
+  let { req, res, } = resOptions;
+  let inKindRes = (!res || !res.locals) ? Object.assign({}, { locals: {}, }, res) : res;
+  let inKindReq = (!req || !req.app || !req.connection || !req.headers || !req._parsedUrl) ? Object.assign({}, { app: {}, connection: {}, headers: {}, _parsedUrl: {}, },
+      req) : req;
+  const standardLocals = (
+    this.protocol &&
+    this.protocol.resources &&
+    this.protocol.resources.app)
+    ? this.protocol.resources.app.locals
+    : {};
+  const periodicExpressAppLocals = Object.assign({},
+    standardLocals //, { settings: true, }
+  );
+
+  const responseData = Object.assign({
+    periodic: periodicExpressAppLocals,
+    request: {},
+  }, inKindRes.locals);
+  responseData.request = {
+    query: querystring.parse(inKindReq._parsedUrl.query),
+    params: inKindReq.params,
+    baseurl: inKindReq.baseUrl,
+    originalurl: inKindReq.originalUrl,
+    parsed: inKindReq._parsedUrl,
+    'x-forwarded-for': inKindReq.headers['x-forwarded-for'],
+    remoteAddress: inKindReq.connection.remoteAddress,
+    referer: inKindReq.headers.referer,
+    originalUrl: inKindReq.originalUrl,
+    headerHost: inKindReq.headers.host,
+  };
+  // console.log('inKindRes.locals', inKindRes.locals);
+  // console.log('inKindReq.app.locals', inKindReq.app.locals);
+  // console.log({ responseData });
+  return responseData;
+}
+
+/**
+ * Creates a function that will render data from a view put can accept additional data for the template and always send a response. Alias for CoreController.protocol.respond
+ * @return {Function} A function that will render a view from a template given template data
+ */
+var _render = function () {
+  /**
+   * Renders a view from a template given template data
+   * @param  {Object}   req          Express request object
+   * @param  {Object}   res          Express response object
+   * @param  {string}   viewtemplate File path for the view template. By default render will check if file exists in configured default theme and periodicjs extension as well as the viewname as an absolute path
+   * @param  {Object}   viewdata     Data that should be passed for template render
+   */
+  let fn = function renderView(req, res, viewtemplate, viewdata) {
     const themename = this.theme;
     const viewTemplateData = (typeof viewtemplate === 'string')
       ? { viewname: viewtemplate }
       : viewtemplate;
-    const standardLocals = (
-      this.protocol &&
-      this.protocol.resources &&
-      this.protocol.resources.app)
-      ? this.protocol.resources.app.locals
-      : {};
-    const viewDataObj = Object.assign({}, standardLocals, viewdata);
+    const viewDataObj = getRespondInKindData.call(this,{ req, res });
     return this._utility_responder.render(viewDataObj, viewTemplateData)
       .then(result => {
         return this.protocol.respond(req, res, { responder_override: result });
@@ -227,5 +287,6 @@ module.exports = {
   handleDocumentQueryRender: _handleDocumentQueryRender,
   handleDocumentQueryErrorResponse: _handleDocumentQueryErrorResponse,
   renderView: _renderView,
+  render: _render,
   getViewModelProperties: _getViewModelProperties
 };
