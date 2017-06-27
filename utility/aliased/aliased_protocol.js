@@ -186,6 +186,52 @@ var _renderView = function () {
   // return wrapWithDeprecationWarning.call(this, fn, message);
 };
 
+var generateErrorDetails = function (req, data = {}) {
+  data.ipinfo = {
+    'x-forwarded-for': req.headers['x-forwarded-for'],
+    remoteAddress: req.connection.remoteAddress,
+    referer: req.headers.referer,
+    originalUrl: req.originalUrl,
+    headerHost: req.headers.host,
+    osHostname: os.hostname(),
+  };
+  let user = req.user || req.body;
+  if (user && (user.email || user.username)) data.ipinfo.user = user.email || user.username;
+  return data;
+};
+
+
+var _renderError = function () {
+  let fn = function renderError(options) {
+    const { req, res, err, opts = {} } = options;
+    if (opts.logError) {
+      this.protocol.resources.logger.error(generateErrorDetails(req, {}));
+    } else if (opts.logWarning) {
+      this.protocol.resources.logger.warning(generateErrorDetails(req, {}));
+    }
+    res.status(opts.status || 500);
+    if (req.is('json') || req.query.format === 'json') {
+      res.send({
+        result: 'error',
+        status: opts.status || 500,
+        data: {
+          error: err,
+        }
+      });
+    } else {
+      const viewtemplate = { viewname: 'home/error500' };
+      const viewdata = { error: err };
+      return this._utility_responder.render(viewdata, viewtemplate)
+      .then(result => {
+        return this.protocol.respond(req, res, { responder_override: result });
+      }, err => {
+        return this.protocol.respond(req, res, { err });
+      });
+    }
+  };
+  return fn;
+}
+
 function getRespondInKindData(resOptions) {
   let { req, res, } = resOptions;
   let inKindRes = (!res || !res.locals) ? Object.assign({}, { locals: {}, }, res) : res;
@@ -288,5 +334,6 @@ module.exports = {
   handleDocumentQueryErrorResponse: _handleDocumentQueryErrorResponse,
   renderView: _renderView,
   render: _render,
+  renderError: _renderError,
   getViewModelProperties: _getViewModelProperties
 };
