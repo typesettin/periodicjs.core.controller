@@ -240,7 +240,7 @@ var _render = function () {
     const viewTemplateData = (typeof viewtemplate === 'string')
       ? { viewname: viewtemplate }
       : viewtemplate;
-    const viewDataObj = getRespondInKindData.call(this,{ req, res });
+    const viewDataObj = Object.assign({},getRespondInKindData.call(this,{ req, res }),viewdata);
     return this._utility_responder.render(viewDataObj, viewTemplateData)
       .then(result => {
         return this.protocol.respond(req, res, { responder_override: result });
