@@ -1,5 +1,6 @@
 'use strict';
 const path = require('path');
+const os = require('os');
 const querystring = require('querystring');
 const pluralize = require('pluralize');
 const capitalize = require('capitalize');
