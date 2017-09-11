@@ -21,7 +21,7 @@
     "objectcompare": "^0.2.0",
     "periodicjs.core.data": "^0.7.3",
     "periodicjs.core.protocols": "^0.6.2",
-    "periodicjs.core.responder": "~0.3.4",
+    "periodicjs.core.responder": "~0.3.5",
     "pluralize": "^1.1.6",
     "sequelize": "^3.29.0",
     "string-to-json": "^0.1.0",
@@ -58,7 +58,7 @@
     "mongoose": "~4.4.14",
     "periodicjs.core.mailer": "^6.0.0",
     "periodicjs.core.utilities": "^6.1.1",
-    "promisie": "^1.5.3",
+    "promisie": "~2.0.0-alpha.0",
     "utils-merge": "^1.0.0"
   },
   "directories": {},
