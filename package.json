@@ -23,7 +23,7 @@
     "periodicjs.core.protocols": "^0.6.7",
     "periodicjs.core.responder": "~0.3.6",
     "pluralize": "^1.1.6",
-    "sequelize": "^3.29.0",
+    "sequelize": "^4.23.2",
     "string-to-json": "^0.1.0",
     "valid-objectid": "0.0.2",
     "xss": "^0.3.3"
