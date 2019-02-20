@@ -20,7 +20,7 @@
   "dependencies": {
     "capitalize": "^1.0.0",
     "objectcompare": "^0.2.0",
-    "periodicjs.core.data": "^2.1.4",
+    "periodicjs.core.data": "^2.1.5",
     "periodicjs.core.protocols": "^0.6.10",
     "periodicjs.core.responder": "~0.3.6",
     "pluralize": "^1.1.6",
@@ -107,6 +107,6 @@
   "scripts": {
     "test": "mocha -R spec --recursive"
   },
-  "version": "10.30.4",
+  "version": "10.30.5",
   "license": "MIT"
 }
