@@ -22,7 +22,7 @@
     "objectcompare": "^0.2.0",
     "periodicjs.core.data": "^2.1.6",
     "periodicjs.core.protocols": "^0.6.10",
-    "periodicjs.core.responder": "~0.3.6",
+    "periodicjs.core.responder": "~0.3.7",
     "pluralize": "^1.1.6",
     "sequelize": "^4.23.2",
     "string-to-json": "^0.1.0",
