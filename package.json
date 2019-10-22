@@ -56,7 +56,7 @@
     "mocha": "~2.2.5",
     "mocha-lcov-reporter": "^1.2.0",
     "moment": "^2.13.0",
-    "mongoose": "~4.4.14",
+    "mongoose": "~5.7.6",
     "periodicjs.core.mailer": "^6.0.0",
     "periodicjs.core.utilities": "^6.1.1",
     "promisie": "~2.0.0-alpha.0",
